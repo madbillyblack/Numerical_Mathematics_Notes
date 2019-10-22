@@ -1,0 +1,61 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+	\begin{tikzpicture}
+%	\node[color=blue] at (9.5,7){\footnotesize{Interpolation}};
+
+
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-0.5,     % start the diagram at this x-coordinate
+        xmax= 9,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 4,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside,
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.5:9, blue, thick,samples=2] {0.25*x+1}; % Linear Regression
+	%\addplot +[black,mark=none] coordinates {(7.75, 1.5) (7.75, 1.75)}; %attempted square marker
+	\addplot[domain=2:8, red, thick,samples=2] {1.5};
+	\addplot +[red,mark=none] coordinates {(8, 1.5) (8, 3)};
+	\addplot +[red,mark=none] coordinates {(4, 1.5) (4, 2)};
+	\addplot[dashed,red,mark=none] coordinates{(2,0)(2,1.5)};
+	\addplot[dashed,red,mark=none] coordinates{(0,1.5)(2,1.5)};
+	\addplot[dashed,red,mark=none] coordinates{(8,0)(8,3)};
+	\addplot[dashed,red,mark=none] coordinates{(0,3)(8,3)};
+
+%	\coordinate (A) at (8,3);
+%	\coordinate (B) at (2,1.5);
+%
+%    	\pic [draw, ->, "$\varphi$", angle radius=1cm, angle eccentricity=1.5] 
+%    		{angle = C--B--A};
+
+	
+	\draw (250,250) coordinate (a) -- (248,250) coordinate (b) -- (250,250.5)coordinate (c)
+	pic["$\alpha$",draw=purple,<->,angle eccentricity=1.2,angle radius=1cm] {angle=a--b--c};
+ 
+
+       \addplot[red, only marks, mark=*] coordinates {(2,1.5)(8,3)};
+       \addplot[blue, only marks, mark=*] coordinates {(4,2)};
+      %\addlegendentry{$f(x)=x^3$}
+    \end{axis}
+\end{tikzpicture}
+\end{document}

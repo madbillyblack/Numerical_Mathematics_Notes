@@ -1,0 +1,34 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+
+\begin{tikzpicture}[square/.style={regular polygon,regular polygon sides=4}]
+
+
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) [blue, square, draw] at (1.5,2.5){1}; 
+	\node (C) [blue, square, draw] at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E)at (0.5,1.5) {1};
+	\node (F) at (0.5,0.5) {-2};
+	\node (G) at (-0.5,0.5) {-3};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) [red, square, draw] at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e) [red, square, draw] at (3.5,1.5) {7};
+	\node (f) at (3.5,0.5) {1};
+	\node (g) [red, square, draw] at (4.5, 0.5) {2};
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{document}

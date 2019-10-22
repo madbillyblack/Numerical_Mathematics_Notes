@@ -1,0 +1,1892 @@
+\documentclass[a4paper,12pt,]{report}
+%\documentclass[a4paper,12pt,landscape,twocolumn]{report}
+\usepackage[a4paper, inner=1.7cm, outer=2.7cm, top=2cm, bottom=2cm,bindingoffset=1.2cm ]{geometry}
+
+\usepackage[english]{babel}
+
+\usepackage{blindtext}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{index}
+\usepackage{footmisc}
+\usepackage{xlop}
+\usepackage{tikz}
+\usepackage{pstricks}
+\usepackage{multido}
+\usepackage{color}
+\usepackage{pgfplots}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{siunitx}
+%\usepackage[normalem]{ulem}
+%\usepackage{soul}
+\usepackage{cancel}
+\usepackage{tkz-euclide}
+\usepackage{placeins}
+\usetkzobj{all}
+\usetikzlibrary{shapes.geometric}
+
+ 
+
+\usetikzlibrary{arrows,angles}
+\pgfplotsset{compat=1.16,width=10cm}
+\usetikzlibrary{quotes,angles,positioning,decorations.pathreplacing}
+
+\pagestyle{fancy}
+\makeindex
+
+\newenvironment{myindentpar}[1]
+{
+	\begin{list}{}
+          	{\setlength{\leftmargin}{#1}}
+          	\item[]
+ }
+  {\end{list}}
+
+\def\Dot[#1](#2){\psdot[dotstyle = o, fillcolor = #1](!#2 0)}
+
+\newcolumntype{?}{!{\vrule width 2pt}}
+
+\begin{document}
+
+\title{\Large{\textbf{A Primer On \\Numerical Mathematics}}}
+	\author{Dr. Achim Kehrein \\ Dr. Thorsten Camps\\William L. Cole}
+	\date{13.08.2019}
+
+	\maketitle
+	\tableofcontents
+
+	\pagenumbering{arabic} 
+	\setcounter{page}{2}
+
+	\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\fancyhead[LE]{\leftmark}
+	\fancyhead[RO]{\nouppercase{\rightmark}}
+	\fancyfoot[LE,RO]{\thepage}
+
+	\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\setcounter{chapter}{-1}
+\chapter{Numerical Mathematics: A Paradigm Shift}
+
+% OVERVIEW -------------------------------------------------------------------------------------------------------
+\begin{quote}
+	"Because most things don't work the same way on a computer - to a scary extent."\\
+\end{quote}
+
+\section{A "New" Approach to Math.}
+
+
+	So far:\\
+	Infinite processes (limits, derivatives, integrals, etc.)\\
+	$\longmapsto$ Must truncate these processes to make them finite. ("Truncation Error")\\
+\\
+	Infinitely many numbers, infinite precision:\\
+	$\longmapsto$ Computer has only finitely many machine numbers with finite precision ("roundoff 
+	error")\\
+\\
+	Error propagation in mathematical recipes: Mathematically equivalent formulas may produce 
+	different results on a computer. Which result is
+	more accurate?\\
+\\
+	Goal of Numerics Course:\\
+	Learn to treat each problem individually instead of applying "standard recipes".\\
+
+
+% DATA TYPES -----------------------------------------------------------------------------------------------------
+\chapter{Number Representation in Computers and Calculators}
+
+	Which numbers does a computer use?\\
+\\
+	Two types:
+
+\begin{itemize}
+	\item{INT - Integer}
+	\item{FLOAT, DOUBLE - Floating point numbers}\\
+\end{itemize}
+
+	In the past, calculators only used FLOATs. Modern Calculators use both INTs and FLOATs.
+
+
+% INTEGERS --------------------------------------------------------------------------------------------------------
+\section{Integers}
+	...-1, 0, 1, 2, 3...\\ \\
+
+	Infinitely many in math, but computers can only represent finitely many.\\ \\
+	$INT_{MIN}$, $INT_{MIN}$+1, ..., -1, 0, 1, ..., $INT_{MAX}$
+
+
+\begin{figure}[!htb]
+	% r - right
+	% l - left
+	% o - outside edge
+	% i - inside edge
+	\center{\includegraphics[width=0.5\linewidth]{IntMaxMin.png}}
+
+	\caption{In a computer, integers are arranged like a clock.}\label{fig:INT Rollover}
+\end{figure}
+
+
+	Computers use a binary system instead of a decimal system of representation.\\ \\
+
+\begin{tabbing}
+	\hspace*{2cm}\={\textbf{Decimal:}}\hspace*{2cm}\= \hspace*{2cm}\= \hspace*{2cm}\\
+	\>$123=1\cdot100+2\cdot10+3\cdot1$\\
+	\>$\qquad \! =1\cdot10^2+2\cdot10^1 \! \!+3\cdot10^0$\\ \\
+	\>\textbf{Binary:}\\
+	\>$_2 1101 = 1\cdot2^3 + 1\cdot2^2+0\cdot2^1+1\cdot2^0$\\ \\
+	\>$\qquad \quad \! =1\cdot8 \; +1\cdot4\;\,+0\cdot2 \; +1\cdot1\;=\;_{10}\!13$ \\
+\end{tabbing}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=0.5\linewidth]{B2D.png}}
+	\caption{One method for binary to decimal conversion is to multiply by 2 and add the next digit.}
+	\label{fig:Binary to Decimal Conversion}
+\end{figure}
+
+	This scheme corresponds to:
+
+\begin{tabbing}
+	\hspace*{2cm}\=$1\cdot2^3+1\cdot2^2+0\cdot2^1+1\cdot2^0$\\
+	\>\qquad$=(2^2+1\cdot2^1+0)\cdot2+1$\\
+	\>\qquad$=[(1\cdot2+1)\cdot2+0)]\cdot2+1$\\
+\end{tabbing}
+
+
+	How do we go in the other direction?  How does one obtain the binary representation of a decimal 
+	integer? Use division with remainders.\\
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=0.5\linewidth]{D2B.png}}
+	\label{fig: Decimal to Binary Conversion}
+\end{figure}
+
+	For our calculators\\
+	$INT_{MAX} = 2147483647$\\ \\
+	$INT_{MIN} =-2137483648$\\ \\
+
+	$2147483647 = 1,073,741,824 \cdot 2+1$
+	\footnote[3]{The last digit of this number should be 3, but your calculator will round it.} \\[5pt]\\
+	$1073741823=536870911\cdot2+1$\\
+
+	$INT_{MAX}=\underbrace{_b111................11}_{\text{31 digits. 1 bit for the sign}}$\\ \\ \\
+
+	If we leave the range $INT_{MAX}, INT_{MIN}$, this is called an \textbf{overflow error}.
+	\textit{The computer does not notify us about this!} We have to program all of the necessary 
+	checks.
+
+\begin{myindentpar}{1cm}
+	\fbox{\parbox{0.85\textwidth}{As long as the computations do not produce an overflow error, 
+	arithmetic with
+	the datatype INT is \underline{exact}: Addition, subtraction, multiplication, and division with 
+	remainders.}}
+\end{myindentpar}
+
+\bigskip
+
+	We can extend this to rational numbers:
+
+\begin{center}
+	$Rational \; Number=$\large{$\frac{Integer}{Non-Zero\;Integer}$}
+\end{center}
+
+	Just store numerator and denominator separately as integers (INTs).\\
+	Arithmetic for rational numbers:
+
+\begin{center}
+	\Large{$\frac{n_1}{d_1}+\frac{n_2}{d_2}=\frac{n_1d_2+n_2d_1}{d_1d_2}$}
+\end{center}
+
+	To avoid unnecessary overflow, cancel the fractions as much and as soon as possible when 
+	programming your own routine. For a better interpretation, we can convert
+	$\frac{numerator}{denominator}$ into a decimal representation \textit{at the end} of our 
+	computations.\\ \\
+
+	\noindent \textbf{Example: \Large{$\frac{13}{12}$}}\\
+
+\begin{center}
+	\opdiv[maxdivstep=6]{13}{12}
+\end{center}
+
+	The decimal representation will either terminate or will eventually become periodic, as in the 
+	preceding example.
+
+% FLOATING POINT NUMBERS -----------------------------------------------------------------------------------
+\section{Floating Point Numbers}
+
+	Now let's look at FLOATs. In the sciences and in engineering, we also need very large numbers 
+	and very small numbers, i.e close to zero.
+
+\begin{tabbing}
+	\hspace*{2cm}\=\textit{Avogadro's Number}\hspace*{2cm}\=$6.022\times10^{23}$\\ \\
+	\>\textit{Electrical Charge of}\>$q_e=1.602\times10^{-19}C$\\
+	\> \textit{an Elimentary Particle}\\ \\
+	\> \textit{Planck's Constant} \>$h=6.626\times10^{-34} m^2kg/s$
+\end{tabbing}
+
+	Another number representation is needed. Every real number possesses a decimal representation:
+
+\begin{center}
+	$\pm d_k d_{k-1} ... d_0 \underbrace{.}_{\text{\tiny{decimal}}} d_{-1} d_{-2} ....\leftarrow$
+	\footnotesize{\textit{May never stop or become periodic}}
+\end{center}
+
+	This is a convergent series:
+
+\begin{center}
+	$=d_k\cdot10^k+d_{k-1}\cdot10^{k-1}+...+d_0\cdot10^0+d_{-1}\cdot10^{-1}+d_{-2}
+		\cdot10^{-2}+...$
+\end{center}
+
+	On a computer we can only use finitely many digits.  The number of digits is often called the 
+	\textbf{precision}. By moving the decimal point, we standardize these numbers:\\
+
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\begin{center}
+		$\pm \underbrace{d_b.d_{-1}d_{-2}...d_{-p+1}}_{\text{significand}}
+			\times10_{\nwarrow_{ Base}}^{k^{\leftarrow Exponent}}$\\
+		This is a \textbf{floating point number}.
+		\end{center}
+	}
+}
+\end{center}
+
+	It is \textbf{normalized} when there is only one digit, $d_0$ before the decimal point.
+	In  other sources, "normalized" is often shown as
+
+\begin{center}
+	$\textbf{0}.d_k d_{k-1} ... d_{-3} * 10^{k+1}+ \Delta x$
+\end{center}
+
+	For our purposes, a number is normalized when $d_0 \neq 0$, for two main reasons:
+
+\begin{itemize}
+	\item This is how FLOATs are stored on computers and calculators.
+	\item Scientific Notation (i.e. Avogadro's Constant$\; =6.022 \times 10^{23}$)\\
+\end{itemize}
+
+	Also, a computer doesn't use the decimal system.  It uses \textbf{binary}. In binary
+
+\begin{itemize}
+	\item base $\; = 2$
+	\item digits: 0, 1
+\end{itemize}
+
+	In base 2 a normalized floating-point number is
+
+\begin{center}
+	$\textbf{1}.b_{-1}b_{-2}...b_{-p+1}*2^E$
+\end{center}
+
+	Because the first digit is automatically 1, it is usually not stored in the computer.\\
+
+% RELATIVE ERROR ------------------------------------------------------------------------------------------------
+\section{Relative Error}
+	To get a feeling for floating point numbers, let's study a very limited "Toy" number system:
+	 $1.b_{-1} b_{-2}\cdot2^E$
+
+\begin{center}
+	\begin{tabular}{c|c?c?l}
+		$b_{-1}$&$b_{-2}$&\footnotesize{E}&\footnotesize{Decimal Value}\\
+		\hline
+		0&0&0&$1+0\cdot\frac{1}{2}+0\cdot\frac{1}{4}=1$\\
+		0&1&0&$1+0\cdot\frac{1}{2}+1\cdot\frac{1}{4}=1.25$\\
+		1&0&0&$1+1\cdot\frac{1}{2}+0\cdot\frac{1}{4}=1.5$\\
+		1&1&0&$1+1\cdot\frac{1}{2}+1\cdot\frac{1}{4}=1.75$\\
+		\hline
+		0&0&1&$\quad \; 1\cdot2^1=2$\\
+		0&1&1&$1.25\cdot2^1=2.5$\\
+		1&0&1&$\; \,1.5\cdot2^1=3$\\
+		1&1&1&$1.75\cdot2^1=3.5$\\
+	\end{tabular}
+\end{center}
+
+%\pagebreak
+
+\begin{center}
+	\begin{tabular}{c|c|c?r|r|r|r}
+		1.&$b_{-1}$&$b_{-2}$&\footnotesize{$E=-1$}&\footnotesize{$E=0$}&\footnotesize{$E=1$}
+		&\footnotesize{$E=2$}\\
+		\hline
+		&0&0&0.5&1&2&4\\
+		&0&1&0.625&1.25&2.5&5\\
+		&1&0&0.75&1.5&3&6\\
+		&1&1&0.875&1.75&3.5&7\\		
+	\end{tabular}
+\end{center}
+
+\bigskip
+\bigskip
+\bigskip
+
+\begin{footnotesize}
+\begin{center}
+	\begin{tikzpicture}
+    		\begin{tikzpicture}
+        			\begin{axis}
+				[
+            			% center the x axis
+            			axis x line=middle,
+            			% we don't need a y axis line ...
+            			axis y line=none,
+            			% ... and thus there is no need for much `height' of the axis
+            			height=50pt,
+            			% but `height' also changes `width' which is restored here
+            			width=\textwidth,
+            			xmin=-0.5,
+           		 	xmax=7.5,
+				xtick={0,1,...,7},
+				extra x ticks = {0.5, 1.5,...,6.5},
+				extra x tick labels={},
+        				]
+            			\addplot+[only marks, mark=otimes*, color=blue]
+					coordinates {(0.5,0) (0.625,0) (0.75,0) (0.875,0)};
+ 	 			\addplot+[only marks, mark=otimes*, color=violet]
+					coordinates{(1,0)(1.25,0)(1.5,0)(1.75,0)};
+				\addplot+[only marks, mark=otimes*, color=orange]
+					coordinates {(2,0) (2.5,0) (3,0) (3.5,0)};
+				\addplot+[only marks, mark=otimes*, color=red]
+					coordinates {(4,0) (5,0) (6,0) (7,0) };
+ 				\path (0.5,0) coordinate (A1)
+					(0.875,0) coordinate (A2)
+					(1,0) coordinate (B1)
+					(1.75,0) coordinate (B2)
+					(2,0) coordinate (C1)
+					(3.5,0) coordinate (C2)
+					(4,0) coordinate (D1)
+					(7,0) coordinate (D2);      
+    			\end{axis}
+ 			\draw[decorate,decoration={brace,raise=2.5em}]
+				(A2) -- (A1) node[midway,below=2.6em]
+				{$_{E=-1}$};
+			\draw[decorate,decoration={brace,raise=2.5em}]
+				(B2) -- (B1) node[midway,below=2.6em] {$E=0$};
+			\draw[decorate,decoration={brace,raise=2.5em}]
+				(C2) -- (C1) node[midway,below=2.6em] {$E=1$};
+			\draw[decorate,decoration={brace,raise=2.5em}]
+				(D2) -- (D1) node[midway,below=2.6em] {$E=2$};
+    		\end{tikzpicture}
+	\end{tikzpicture}
+\end{center}
+\end{footnotesize}
+
+	Note that the distance between the numbers depends on their size. Consequentially, the round off 
+	error will also be affected by the size of the number. For this reason it's important to use 
+	\textit{relative error} instead of absolute error.\\
+
+\begin{tabbing}
+	\hspace*{2cm}\=Absolute Error \hspace*{1cm} \= $x+ \Delta x$ \\
+	\> Relative Error \> $x(1+ \frac{\Delta x}{x})=x(1+ \delta x)$\\
+\end{tabbing}
+
+	Often the relative error is the better way to measure the round off error of floating point numbers.
+
+\begin{center}
+	$fl(x)=x(1+ \delta x) \Leftrightarrow \delta x = \frac{fl(x)-x}{x}$
+\end{center}
+
+% RELATIVE ERROR EXAMPLE ------------------------------------------------------------------------------------
+\section{Relative Error Examples}
+
+	\textbf{Example 1:} Real number, 4 digits, base 10:
+
+\begin{tabbing}
+	\hspace{3cm}\=$\quad \; \; x= \underbrace{1.234}_{\tiny{4digits}}\!56$\\
+	\> \\
+	\>$fl(x)=1.235$\\
+	\> \\
+	\>\large{$\quad \!  \delta x = \frac{1.235-1.23456}{1.23456}$}\\
+	\> \\
+	\>$\qquad \; \; = \frac{0.00044}{1.23456}=0.000356$\\
+	\> \\
+	\> $\qquad \; \; \simeq 0.0004 \; \leftarrow$ \footnotesize{Only first non-zero digit}
+\end{tabbing}
+
+	For errors, only record record the first non-zero (in most cases). When the first non-zero digit is 1, 
+	record the next digit (which can be zero).\\ \\
+
+	\noindent \textbf{Example 2:} $y=123.456 = 1.23456 \times 10^2$
+
+\begin{tabbing}
+	\hspace{3.5cm}\=$fl(y)=1.235 \times 10^2$\\
+	\> \\
+	\> \quad \large{$\delta y = \frac{1.235 \times 10^2-1.23456 \times 10^2}{1.23456 \times 10^2}$}\\
+	\> \\
+	\> \qquad \; \large{$= \frac{0.00044 \times 10^2}{1.23456 \times 10^2}\, ^{\leftarrow Absolute \; Error}$}\\
+	\> \\
+	\> \qquad \; $\simeq 0.0004{\leftarrow Relative \; Error}$
+\end{tabbing}
+
+	Notice how the relative error size reflects the number of digits used in the system. If a decimal 
+	system uses $k$ digits, then the relative round-off error is bounded by $5 \times 10^{-k}$.\\
+
+% SPECIAL FLOATS -------------------------------------------------------------------------------------------------
+
+\section{Subnormal Numbers and other special FLOAT values}
+
+	Note in the number line from earlier that there is a gap at zero.  What do we do about this gap?  
+	How do we express zero itself as a FLOAT? Not only is the number of digits in the mantissa finite, 
+	but the number of digits in the exponent is also finite. In C and other programming languages 
+	FLOATs are 32 Bits.  23 of these bits are used for the significand, 7 for the exponent, and 1 for the 
+	sign.\\ \\
+
+	In our toy system from earlier, let's use $-2\leq  E \leq 4$
+	
+\begin{tabbing}
+	\hspace*{2cm}\= \textit{Use the maximal exponent for} \\
+	\hspace*{3cm}\=INF \hspace*{1cm} \=  infinity (overflow error)\\
+	\> NaN \> "not a number"
+\end{tabbing}
+
+	These two are distinguished by using different mantissae.
+
+\begin{tabbing}
+	\hspace*{2cm}\= \textit{Use the minimal exponent for \textbf{subnormal numbers:}}
+		$\textbf{0}.b_{-1}b_{-2}\times 2^{-2}$ \\
+	\hspace*{3cm}\=$0.00\times 2^{-2}$ \hspace*{1cm} \=  0\\
+	\>$0.01\times 2^{-2}$ \>$\frac{1}{8}$\\
+	\>$0.10\times 2^{-2}$ \>$\frac{1}{4}$\\
+	\>$0.11\times 2^{-2}$ \>$\frac{3}{8}$\\
+\end{tabbing}
+
+	What is the relative error in our toy system?
+
+\begin{center}
+	$\frac{1}{8}=2^{-3}=\frac{1}{2} \times 2^{-2}$
+\end{center}
+
+% Notes are a bit spotty here -------------------------------------------------------------------------------------
+	Go to seven, which in binary is
+
+\begin{center}
+	$1.11 \times 2^2$\\
+	$\frac{1}{8} \times 2^2$\\
+\end{center}
+
+% --------------------------------------------------------------------------------------------------------------------
+
+	Some example of relative errors in our binary toy system:
+
+\begin{center}
+	$\frac{7-7.4}{7.4}\simeq -0.05$\\
+	\bigskip
+	$\frac{7-6.6}{6.6} \simeq 0.06$\\
+	\bigskip
+	$\frac{8-8.9}{8.9} \simeq -0.10$\\
+\end{center}
+
+	Why are subnormal numbers treated differently?
+
+\begin{center}
+	\begin{Large}
+	$\frac{fl(\frac{1}{16})-\frac{1}{16}}{\frac{1}{16}}
+		=\frac{\frac{1}{8}-\frac{1}{16}}{\frac{1}{16}}
+		=\frac{\frac{2}{16}-\frac{1}{16}}{\frac{1}{16}}=\frac{\frac{1}{16}}{\frac{1}{16}}=1$
+	\end{Large}
+\end{center}
+
+	Relative error $2^{-3}$ does not hold for sub-normal numbers, only normalized numbers.  
+	Because of this, it is of the utmost importance to \textit{\textbf{avoid dividing by numbers close to 
+	zero whenever possible!}}
+
+% ADDING FLOATS ------------------------------------------------------------------------------------------------
+\section{Adding FLOATs}
+
+	Now we know the general shape of the machine number system FLOAT, how does arithmetic work 
+	with it?
+
+\begin{center}
+	Toy System: $\Bigg( \bigg( \Big( \left(4\oplus \frac{1}{4}\right) \oplus \frac{1}{4}\Big)
+		\oplus \frac{1}{4}\bigg) \oplus \frac{1}{4}\Bigg)=4$
+\end{center}
+
+	The sum of two machine numbers may not be a machine number.  Addition my create more round-
+	off errors.
+
+\begin{tabbing}
+	\hspace*{4cm}\= $\qquad 4 \oplus \bigg(\frac{1}{4}\oplus\Big( \frac{1}{4}\oplus\left(\frac{1}{4}\oplus \frac{1}{4}\right)\Big)\bigg)$\\
+	\> \\
+	\>$ \quad=4 \oplus \Big( \frac{1}{4} \oplus\left( \frac{1}{4} \oplus \frac{1}{2}\right)\Big)$\\
+	\> \\
+	\>$ \quad=4 \oplus \left( \frac{1}{4} \oplus \frac{3}{4}\right) = 4 +1 = 5$\\
+\end{tabbing}
+
+	If you must add lots of numbers on a computer, add them in order from small to large, to minimize 
+	round-off error.\\
+
+	\noindent \textbf{Example:} Harmonic Series
+
+\begin{center}
+	$1+\frac{1}{2}+\frac{1}{3}+\frac{1}{4}+\frac{1}{5}+\frac{1}{6}+...$
+\end{center}
+
+\begin{itemize}
+	\item{Divergent Series}
+	\item{Partial sums "approach" infinity.}
+\end{itemize}
+
+	We try to recreate the harmonic series in a C program:
+
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\texttt{
+			\begin{tabbing}		
+				\hspace*{0.7cm}\=float sum;\\
+				\>sum = 0.0;\\
+				\>for (i=1; i<= 1\,000\,000; i++)\{\\
+				\>\qquad sum += 1/(float) i;\\
+				\>\}\\
+			\end{tabbing}}
+	}
+}
+\end{center}
+
+	We repeat this same for-loop, increasing the size of the loop from \texttt{i<=1\,000\,000} to 
+	10,000,000 and 100,000,000.  The program returns the following results:
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\texttt{
+			\begin{tabbing}		
+				\hspace*{0.5cm}\=1\,000\,000 summands give sum 14.3573579788\\
+				\>10\,000\,000 summands give sum 15.4036827087\\
+				\>100\,000\,000 summands give sum 15.4036827087
+			\end{tabbing}}
+	}
+}
+\end{center}
+
+	We see that by adding increasingly smaller summands the computer has already run out of 
+	precision before 10,000,000 cycles.  If we reverse the order of the for-loop so that the script adds 
+	summands in ascending order from smallest to largest we obtain the following results:
+
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\texttt{
+			\begin{tabbing}		
+				\hspace*{0.5cm}\=1\,000\,000 summands give sum 14.3926515579\\
+					\>10\,000\,000 summands give sum 16.6860313416\\
+					\>100\,000\,000 summands give sum 18.8079185486\\
+					\>1\,000\,000\,000 summands give sum 18.8079185486
+			\end{tabbing}}
+	}
+}
+\end{center}
+
+	By adding the summands from smallest to largest, it takes the script is able to add smaller numbers, 
+	and so obtain a larger partial sum.  \textit{When programming, if possible try to add smaller 
+	numbers first, for more accurate results.}
+
+
+\pagebreak
+% CONFER WITH PROFESSOR KEHREIN ABOUT THIS BIT! ----------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------------------
+\begin{tabbing}
+	\hspace*{2cm}\=$0.1 =
+		\underbrace{ b_{-1}}_{=0}\frac{1}{2}+b_{-2}\frac{1}{2^2}+b_{-3}\frac{1}{2^3}+...$\\
+	\footnotesize{Multiply by 2:}\\
+	\>$0.2 = \underbrace{b_{-1}}_{=0}+b_{-2}\frac{1}{2}+b_{-3}\frac{1}{2^2}+...$\\
+	\footnotesize{$\times 2:$}\\
+	\>$0.4 =b_{-2}+b_{-3}\frac{1}{2}+b_{-4}\frac{1}{2^2}+...$\\
+	\footnotesize{$\times 2:$}\\
+	\>$0.8 =b_{-3}+b_{-4}\frac{1}{2}$
+\end{tabbing}
+%------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------------------------------------------
+
+	A particular C program adds \texttt{float 0.0 += 0.1}, with the following results:
+
+\begin{tabbing}
+	\hspace*{2cm}\=$fl(0.1)=0\,.\,100\,000\,001\,5$\\
+	\>$fl(0.2)=0\,.\,200\,000\,003\,0$\\
+	\>$fl(0.3)=0\,.\,300\,000\,011\,9$\\
+	\>$fl(0.4)=0\,.\,400\,000\,006\,0$\\
+	\>$fl(0.5)=0\,.\,500\,000\,000\,0$\\
+	\>$fl(0.6)=0\,.\,600\,000\,023\,8$\\
+	\>$fl(0.7)=0\,.\,700\,000\,047\,7$\\
+	\>$fl(0.8)=0\,.\,800\,000\,071\,5$\\
+	\>$fl(0.9)=0\,.\,900\,000\,095\,4$\\
+	\>$fl(1.0)=0\,.\,200\,000\,119\,2$\\
+\end{tabbing}
+
+\begin{center}
+	\begin{tabular}{r?c|l}
+	$b_0$ & \textbf{0} & \textbf{.1}$\leftarrow$ \textit{Double the fractional part}\\
+	$b_{-1}$ & 0 &.2\\
+	$b_{-2}$ &0 &.4\\
+	$b_{-3}$ &0 &.8\\
+	\textit{Discard whole part} $\rightarrow$&1 &.6\\
+	$b_{-5}$ &1 &.2 $\leftarrow$\textit{Numbers repeat}\\
+	$b_{-6}$ &0 &.4\\
+	\end{tabular}
+\end{center}
+
+	The whole part becomes the binary representation, hence:
+
+\begin{center}
+	$fl(_{10}0.1) = \underbrace{_20}_{b_0}\! \! \!.000\,110\,011\,001\,1...
+		 = _2\!0.000\,\overline{1100} $\\
+	$=\underbrace{_2 1.\;1}_{\text{Normalized}}\!\!\!\!\!001\;1001\;1001 ... \times 2^{-4}$\\
+\end{center}
+
+	FLOATs use 23 fractional bits, so this non-terminating number will be rounded:
+
+\begin{center}
+	$fl(_{10}0.1)=1.1001\;1001\;1001\;1001\;1001\;10\cancelto{1}{01}\times 2^{-4}$
+\end{center}
+
+	Let's compute the round-off error:
+
+\begin{tabbing}
+	\hspace*{2cm}\=\footnotesize{absolute error$\rightarrow$} \hspace*{0.25cm}\=$\Delta x
+		=1\times2^{-23}\times2^{-4}-1.1001\;1001\;...\times2^{-24}\times2^{-24}$\\
+	\>\> $\qquad \! \!= 2^{-3}\times2^{-24}-_{10}0.1\times2^{-24}$\\
+	\>\> $\qquad \! \!= (_{10}0.125-_{10}0.1)\times2^{-24}$\\
+	\>\> $\qquad \! \!=_{10}\!1.49\times10^{-9}\simeq1.5\times10^{-9}$\\
+
+\end{tabbing}
+
+	Now let's add two FLOAT values:
+
+\begin{center}
+	\begin{tabular}{rrccccccr}
+		& \tiny{$1\;1\;\;$} &  \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$} 
+			& \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$} 
+			& \tiny{$1$} & \\
+		$fl(0.1)=$ & $1.$ & $\!1001$ & $1001$ & $1001$ & $1001$ & $1001$ & $101$ 
+			& $\times2^{-4}$\\
+		$+\;fl(0.1)=$ & $+1.$ & $\!1001$ & $1001$ & $1001$ & $1001$ & $1001$ & $101$ 
+			& $\times2^{-4}$\\
+		\hline
+		$_{\text{Not normalized}}\rightarrow$& $11.$ & $\!0011$ & $0011$ & $0011$ & $0011$ 
+			& $0011$ & $010$ & $\times2^{-4}$\\ \\
+	\end{tabular}
+
+	$fl(0.2) = 1.\;1001\;1001\;1001\;1001\;1001\;101\cancelto{round-off}{0} \times2^{-3}$
+\end{center}
+
+	To add an additional $fl(0.1)=1.100...\times2^{-4}$ we have to shift the mantissa to adjust the 
+	exponent.
+
+\begin{center}
+	\begin{tabular}{rrccccccr}
+		&\tiny{$1\;1\;\;$} & \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$}
+			& \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$} & \tiny{$\quad\, \;1\;1$}
+			& \tiny{$1\;1\quad \;\,$} & \\
+		$fl(0.2)=$ & $1.$ & $\!1001$ & $1001$ & $1001$ & $1001$ & $1001$ & $101\;\,$ 
+			& $\times2^{-3}$\\
+		$+\;fl(0.1)=$ & $+\;0.$ & $\!1100$ & $1100$ & $1100$ & $1100$ & $1100$ 
+			& $11\cancelto{1}{0}\cancel{1}$ & $\times2^{-3}$\\
+		\hline
+		$_{\text{Normalize}}\rightarrow$& $10.$ & $\!0110$ & $0110$ & $0110$ & $0110$ 
+			& $0110$ & $100$ & $\times2^{-3}$\\ \\
+
+		$\Rightarrow$ & $1.$ & $\!0011$ & $0011$ & $0011$ & $0011$ & $0011$ & $010$ 
+			& $\times2^{-2}$\\ \\
+	\end{tabular}
+\end{center}
+
+	Is this floating point number representative of $_{10}0.3$? Let's check!
+
+\begin{center}
+	\begin{tabular}{r|l}
+	\textbf{0} & \textbf{.3}\\
+	0 &.6\\
+	1 &.2\\
+	0 &.4\\
+	0 &.8\\
+	1 &.6 $\leftarrow Numbers\; repeat$\\
+	$Repeating\; pattern: 0011\! \rightarrow$1 &.2 \\
+	\end{tabular}
+\end{center}
+
+% Section requires computer data (Xcel) --------------------------------------------------------------------------
+	To add $fl(0.1)$ at this point, we must adjust the exponent by two.  There are two options: First, we can shift 
+	by one digit twice, which would lead to two 	cases of rounding up. The second option is to shift by two digits at 
+	once, which leads to rounding down.  Looking at the results from the computer, we see that the second method 
+	is chosen.
+%------------------------------------------------------------------------------------------------------------------------
+
+\begin{center}
+	\begin{tabular}{rccccccr}
+		&  \tiny{$1\;1\qquad\!$} & \tiny{$1\;1\qquad\!$} &  \tiny{$1\;1\qquad\!$} 
+			& \tiny{$1\;1\qquad\!$} & \tiny{$1\;1\qquad\!$} & \tiny{$1\qquad \!$} & \\
+		$1.$ & $\!0011$ & $0011$ & $0011$ & $0011$ & $0011$ & $010$ & $\times2^{-2}$\\
+		$+\;0.$ & $\!0110$ & $0110$ & $0110$ & $0110$ & $0110$ & $011$ & $\times2^{-2}$\\
+		\hline
+		$1.$ & $\!1001$ & $1001$ & $1001$ & $1001$ & $1001$ & $101$ & $\times2^{-2}$\\
+		&&&&&&$\;\;=$& $\! \! \! \!fl(0.4)$\\ \\
+	\end{tabular}
+
+	\bigskip
+
+	\begin{tabular}{rrccccccr}
+		&\tiny{$1\;1\;\;$} &  \tiny{$1\;1\;1\;1$} & \tiny{$1\;1\;1\;1$} &  \tiny{$1\;1\;1\;1$} 
+			& \tiny{$1\;1\;1\;1$}& \tiny{$1\;1\;1\;1$} & \tiny{$1\;1\quad \;\,$} & \\
+		$fl(0.4)=$ & $1.$ & $\!1001$ & $1001$ & $1001$ & $1001$ & $1001$ & $101$
+			& $\times2^{-2}$\\
+		$+\;fl(0.1)=$ & $\!+\;0.$ & $\!0110$ & $0110$ & $0110$ & $0110$ & $0110$ & $011$ 
+			& $\times2^{-2}$\\
+		\hline
+		$_{\text{Normalize}}\rightarrow$& $10.$ & $\!0000$ & $0000$ & $0000$ & $0000$ 
+			& $0000$ & $000$ & $\times2^{-2}$\\ \\
+
+		$fl(0.5)=$ & $1.$ & $\!0000$ & $0000$ & $0000$ & $0000$ & $0000$ & $000$ 
+			& $\times2^{-1}$\\ \\
+	\end{tabular}
+\end{center}
+
+	\textbf{Note:} In this program $fl(0.5)= 0.5$
+
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+			\textbf{\underline{Side Remark:}} When programming FLOAT results, allow for round-off 
+			errors. Don't use conditions like
+			\begin{center}
+				\texttt{result == 0.0}
+			\end{center}
+			Instead use
+			\begin{center}
+				\texttt{result $<$= 0.00....1}
+			\end{center}
+			Don't use values that are \underline{too} small, though.
+	}
+}
+\end{center}
+
+	One more step:\\
+\begin{center}
+	\begin{tabular}{rrccccccl}
+		$fl(0.5)=$ & $1.$ & $\!0000$ & $0000$ & $0000$ & $0000$ & $0000$ & $\!\!\!000$
+			& $\times2^{-1}$\\
+		$+\;fl(0.1)=$ & $\!+\;0.$ & $\!0011$ & $0011$ & $0011$ & $0011$ & $0011$
+			& $0\!\!\!\underbrace{10}$ & $\times2^{-1}$\\
+		&&&&&&& $\;\;\;\;\nwarrow$ &$_{\!\!\!\!\!\!\!\text{two digits affected}}$\\
+		\hline
+		& $1.$ & $\!0011$ & $0011$ & $0011$ & $0011$ & $0011$ & $\!\!\!010$
+			& $\times2^{-1}$\\ \\
+
+	\end{tabular}
+\end{center}
+
+	Because $fl(0.1)$ needs to be rounded by two digits, there is a larger error in this operation.
+	\textbf{Shifting loses significant digits!}  Many other math texts ignore this effect.\\ \\
+
+	We may think that the round-off error is gone at 0.5 because it can be represented \textit{exactly}
+	by a machine number, but notice that 1 is also a machine number, and we have a huge round-off 
+	error there.\\ \\
+
+	So far we've had
+\begin{center}
+	\begin{tabular}{rl}
+		& $fl(0.x)+fl(0.1)=fl(0.x+1)$\\
+		& \\
+		\textit{i.e.}& $fl(0.4)+fl(0.1)=fl(0.5)\qquad$\\
+		& \\
+		& \\
+		\textit{Note that:}& \\
+		& $\underbrace{fl(0.9)+fl(0.1)}_{_{\text{severe round-off error}}} \neq fl(1.0)$\\
+		& \\
+		\textit{Since} & $fl(1.0) = 1.0$.
+\end{tabular}
+\end{center}
+
+	Where does this happen the first time and why?  Notice in the preceding example we do not have a 
+	simple case of error propagation. The roundoff error of $fl(0.1)$ does not simply accumulate in the 	
+	sum. \\
+
+	What errors are produced by arithmetic operations?  Sometimes a sum, difference, product, or 
+	quotient of machine numbers is not a machine number. So there are round-off errors produced by 
+	arithmetic, not just number representation. (Other texts provide rather limited information about 
+	this.) Additionally, how do errors propagate if we begin with uncertain numbers (i.e. measurement 
+	data). \\
+
+% Finding Zeros of Functions --------------------------------------------------------------------------------------
+\section{Finding Zeros of Functions}
+
+	How do we compute function values? Due to round-off errors, can we really detect zeros? If a 
+	function gets very close to zero, how can we determine whether its value is really different from 
+	zero, or just a zero with a round-off error?\\
+
+	\noindent \textbf{Example:}\medskip\\
+	
+	\noindent In our toy system with normalized floating-point numbers, of the form 
+	$b_0.b_{-1}b_{-2}\times 2^E$ we found:
+
+\begin{center}
+	$4\oplus \frac{1}{4} = 4$\\
+	\bigskip
+\end{center}
+
+	Why?
+
+\begin{center}
+	$fl(4)=_2 1.00\times 2^2$\\
+	\medskip
+	$\; \; fl(\frac{1}{4})=_2 1.00\times 2^{-2}$
+\end{center}
+
+	Add them:
+
+\begin{center}
+	\textit{Shift the $fl(\frac{1}{4})$ to adjust the exponent:}\\
+	\medskip
+\begin{tabular}{rcll}
+	$fl_{shifted}(\frac{1}{4})\;=$ & $\!\!0.00$ & $\!\!\!\!\cancelto{\text{round down}}{01}$ & $\times 2^2$\\
+	$+ \; fl(4)\;=$ & $\!\!1.00$ & & $\times 2^2$\\
+	\hline
+	& $\!\!1.00$ & & $\times 2^2 \; = fl(4)$\\
+\end{tabular}
+\end{center}
+	\bigskip
+
+	What size of error do we get here?
+
+\begin{center}
+	\large{$\delta_{sum}=\frac{4-4.25}{4.25}=\frac{-0.25}{4.25}\simeq -0.06$}
+\end{center}
+
+	\medskip
+	Upper bound for relative error: $_2 0.001 = _{10}0.125$\\
+
+	Notice, however, that we can make the error arbitrarily large by repeated addition:
+
+\begin{center}
+	$\bigg(\Big(\left(4 \oplus \frac{1}{4}\right)\oplus \frac{1}{4}\Big)\oplus \frac{1}{4}\bigg)\oplus \frac{1}{4}$\\
+	\medskip
+	\large{$\delta =$ \Large{$\frac{4-5}{5}$}$\,=\,$\Large{$\frac{-1}{5}$}$\,=-0.2$}\\
+\end{center}
+	\medskip
+
+	We have already seen that adding smaller summands first improves the accuracy.
+
+% FLOAT MULTIPLICATION ---------------------------------------------------------------------------------------
+\section{FLOAT multiplication}
+
+	\noindent \textbf{Example:} Use decimal system with three digits:
+
+\begin{tabbing}
+	\hspace*{5cm} \=$(1.23 \times 10^4)\cdot(4.56 \times 10^3)$\\
+	\> $\;=5.6088 \times 10^7$\\
+	\> $\Rightarrow 5.61 \times 10^7$
+\end{tabbing}
+
+	Rounding is necessary, but within the rounding bounds of the number system.  For multiplication, 
+	the error propagation can be described rather easily:
+
+\begin{tabbing}
+	\hspace*{5cm}\= $[x(1+\delta x)]\cdot[y(1+\delta y)]$\\
+	\>$= (x+x\cdot\delta x)(y+y\cdot\delta y)$\\
+	\>$= xy + xy\delta x + xy\delta y + xy \delta x \delta y$\\
+	\> $= xy(1 + \delta x + \delta y + \!\!\!\underbrace{\delta x \delta y}_{negligible}\!\!\!)$\\
+	\> $\simeq xy(1+ \delta x + \delta y)$
+\end{tabbing}
+
+	The relative error of the product is (to a very good approximation) the sum of the relative errors of 
+	the factors. The relative errors don't explode.  They grow slowly.
+
+% FLOAT DIVISION -------------------------------------------------------------------------------------------------
+\section{FLOAT Division}
+
+	\noindent \textbf{Example:} Use decimal system with three digits:
+
+\begin{tabbing}
+	\hspace*{4cm}\=\Large{$\frac{1.23 \times 10^4}{4.56 \times 10^3}$}
+	\hspace*{0.1cm}\=\normalsize{$=0.2697\times 10^1$}\\
+	\>\>$=2.697\times 10^0 \!\leftarrow$\footnotesize{\textit{Write exponent so it isn't forgotten!}}\\
+	\> \> $\Rightarrow 2.70 \times 10^0$\\
+	\> \Large{$\frac{x(1+\delta x)}{y(1+\delta y)}$}\>=\Large{$\frac{x}{y}$}
+		\normalsize{$(1+\delta x)
+		(\underbrace{1-\delta y+(\delta y)^2-(\delta y)^3+-...}_{\text{Geometric series.}\;\delta y\;
+		\text{can be assumed}\;<1})$}
+\end{tabbing}
+
+\begin{center}
+\fbox
+{
+	\parbox{0.6\textwidth}
+	{
+			\textbf{\underline{Geometric Series}:}
+			\begin{center}
+				$1+ (-\delta y) + (-\delta y)^2 + (-\delta y)^3 + ...
+				=$ \large{$\frac{1}{1-(-\delta y)}$}\\
+				\medskip
+				for $\left| \delta y \right| <1$
+			\end{center}
+	}
+}
+\end{center}
+
+\begin{tabbing}
+	\hspace*{4.1cm}\=\Large{$\frac{x(1+\delta x)}{y(1+\delta y)}$}
+	\hspace*{0.1cm} \= \normalsize{$=$} \Large{$\frac{x}{y}$}
+		\normalsize{$(1 + \delta x - \delta y + \text{\small{\textit{[smaller terms]}}})$}\\
+	\medskip \\
+	 \>\> \normalsize{$\simeq$} \Large{$\frac{x}{y}$} \normalsize{$1+ \delta x - \delta y$}
+\end{tabbing}
+
+	As with multiplication, the relative errors in division can add up but can also partially cancel each 
+	other out. \textit{Multiplication and Division behave nicely }for FLOATS.
+
+
+% FLOAT SUBTRACTION------------------------------------------------------------------------------------------------------------------------
+\section{FLOAT Subtraction}
+
+	Subtraction is very problematic when values are \textit{almost}  equal.
+
+\begin{tabbing}
+	\hspace{3cm}\= $4.56 \times 10^3 - 4.55 \times 10^3$
+	\hspace{0.1cm}\=$ = \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\underbrace{0.0}_{\text{Two significant digits 
+	lost!}} \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! 1 \times 10^3$\\ \\
+	Normalize: \>\>$=1.\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!
+		\underbrace{00}_{\text{These could be 9. We don't know!}}
+		\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \times 10^1$
+\end{tabbing}
+	
+	Such results are usually \textit{very} uncertain. \textit{Avoid formulas that lead to differences of 
+	almost equal numbers!}\\ \\
+
+	\noindent \textbf{Example 1:}
+
+\begin{tabbing}
+	\hspace*{4cm} \= $\ln5000-\ln4999$ \hspace*{0.1cm}\= $\simeq 8.51719391 - 8.516993171$\\
+	\> \> $\simeq 2.0002 \times10^{-4}$ \\
+	Alternatively:\\
+	\> $\qquad \qquad \; \ln$ \Large{$\!\frac{5000}{4999}$}\> $\simeq 2.000199947
+		\times 10^{-4}$
+\end{tabbing}
+
+	\noindent \textbf{Example 2:}
+
+\begin{tabbing}
+	\hspace*{4cm} \= $f(t)$ \hspace*{0.1cm} \= $\!\! =$ \Large{$\frac{\sqrt{t^2+9}-3}{t^2}$}\\ \\
+	This equation can be rewritten:\\
+	\> \>$\!\! =$ \Large{$\frac{\sqrt{t^2+9}-3}{t^2} \cdot
+		\frac{\sqrt{t^2+9}+3}{\sqrt{t^2+9}+3}$}\\ \\
+	\> \> $\!\! =$ \Large{$\frac{t^2+9-9}{t^2(\sqrt{t^2+9}+3)}$}\\ \\
+	\> \> $\!\! =$ \Large{$\frac{1}{\sqrt{t^2+9}+3}$}\\
+\end{tabbing}
+
+	Computer results:
+
+\begin{center}
+\begin{tabular}{r|c|c}
+	$t$ & \large{$\frac{\sqrt{t^2+9}-3}{t^2}$} & \large{$\frac{1}{\sqrt{t^2+9}+3}$}\\
+	\hline
+	&&\\
+	0.001 & 1.6667 & 1.666 6666 2\\
+	&&\\
+	0.00001 & 1.6666 &\\
+\end{tabular}
+\end{center}
+ 
+
+\chapter{Interpolation}
+
+\begin{center}
+	\begin{tikzpicture}
+	\node[color=blue] at (9.5,7){\footnotesize{Interpolation}};
+	\node[color=gray] at (10,5.3){\footnotesize{Linear}};
+	\node[color=gray] at (10,5){\footnotesize{Regression}};
+	\node[color=red] at (3.1,2.3) {\footnotesize{$(x_0,y_0)$}};
+	\node[color=red] at (4.7,6) {\footnotesize{$(x_1,y_1)$}};
+	\node[color=red] at (8.7,4.1) {\footnotesize{$(x_n,y_n)$}};
+
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 10,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside,
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-1:10, gray, thick,samples=250] {0.1538*x+2.135}; % Linear Regression
+        \addplot[domain=0:3,blue, thick,samples=250] {1+449/118*(x-1)-213/472*(x-1)*(x-1)*(x-1)}; % S0
+        \addplot[domain=3:4, blue, thick,samples=125] {5-95/59*(x-3)-639/236*(x-3)*(x-3)+311/236*(x-3)*(x-3)*(x-3)}; % S1
+        \addplot[domain=4:10, blue, thick,samples=250] {2-725/236*(x-4)+147/118*(x-4)*(x-4)-49/472*(x-4)*(x-4)*(x-4)}; % S2
+
+       \addplot[red, only marks, mark=*] coordinates {(1,1)(3,5)(4,2)(8,3)};
+      %\addlegendentry{$f(x)=x^3$}
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	n+1 data points: $(x_0, y_0), (x_1,y_1), ... (x_n,y_n)$.  We want an interpolating function,
+	$y=f(x)$ such that $f(x_i) = y_i$ for all $i = 0, 1, ..., n$ Interpolation Conditions.\\ \\
+
+	A totally different approach is the one using the "least squares" method - fit the function as best as 
+	possible to the data. \\
+
+	We start with polynomial interpolation, because polynomials are very simple functions with lots of 
+	nice properties:
+
+\begin{itemize}
+	\item Can be easily calculated
+	\item Continuous and Differentiable everywhere
+	\item Versatile
+\end{itemize}
+
+\pagebreak
+
+	\noindent \textbf{Example:} Linear interpolation (through two points)
+
+\begin{center}
+\begin{tikzpicture}
+	\coordinate (A) at (6,3.5);
+	\coordinate (B) at (3,2);
+	\coordinate (C) at (1,1);
+	\coordinate (D) at (3,1);
+	\coordinate (E) at (6,1);
+	\coordinate (O) at (-0.5,0.25);
+	\coordinate (o1) at (1,-0.2);
+	\coordinate (o3) at (3,-0.2);
+	\coordinate (o6) at (6,-0.2);
+	\coordinate (o8) at (7,4);
+	\coordinate (oC) at (-0.2,1);
+	\coordinate (oB) at (-0.2,2);
+	\coordinate (oA) at (-0.2, 3.5);
+	\coordinate (oX) at (7.5,0);
+	\coordinate (oY) at (0,4.5);
+	\coordinate (XoY) at (0,0);
+	\coordinate (Yo) at (0,-0.5);
+	\coordinate (Xo) at (-0.5,0);
+
+	\draw [->](Xo)--(oX);
+	\draw [->](Yo)--(oY);
+	\draw [blue, thick] (O) -- (o8);
+	\draw [red] (C)--(E);
+	\draw [red] (D)--(B);
+	\draw [red] (E)--(A);
+	\draw [red,dashed] (o1)--(C);
+	\draw [red,dashed] (o6)--(A);
+	\draw [red,dashed] (oC)--(C);
+	\draw [red,dashed] (oA)--(A);
+
+ 	\fill[red] (intersection of O--A and C--D) circle (2pt);
+	\fill[red] (intersection of O--A and E--A) circle (2pt);
+	\fill[blue] (intersection of O--A and B--D) circle (2pt);
+
+	\pic [draw, ->, "$\theta$", angle eccentricity=1.5] {angle = E--C--A};
+	\tkzMarkRightAngle[draw=red,size=.3](D,E,A);
+	\tkzMarkRightAngle[draw=red,size=.3](C,D,B);
+
+	\node[red] (x0y0) at (0.6,1.3) {$(x_0,y_0)$};
+	\node[red] (x1y1) at (5.5,3.8) {$(x_1,y_1)$};
+	\node[blue] (xnyn) at (2.6,2.3) {$(x,y)$};
+	\node (xLabel) at (7.7,0) {$x$};
+	\node (yLabel) at (0,4.7) {$y$};
+	\node [red](x0) at (1,-0.4) {$x_0$};
+	\node [red](x1) at (6,-0.4) {$x_1$};
+	\node [red](y0) at (-0.4,1) {$y_0$};
+	\node [red](y1) at (-0.4,3.5) {$y_1$};
+\end{tikzpicture}
+\end{center}
+
+
+
+
+\begin{center}
+\begin{tabular}{ccc}
+	\underline{Similar Triangles}&&\underline{Two Point Formula for a line}\\ \\
+	\Large{$\frac{y-y_0}{x-x_0}$}\, \normalsize{$=$} \,{$\underbrace{\Large{\frac{y_1-y_0}{x_1-x_0}}}_{\text{slope}}$}
+		& \Large{$\Leftrightarrow$}
+		& $y =$ \Large{$\frac{y_1-y_0}{x_1-x_0}$}\!\! \normalsize{$(x-x_0) + y_0$}\\
+	
+\end{tabular}
+\end{center}
+
+	We distinguish between \textit{Interpolation} and\textit{Extrapolation}.
+
+\begin{center}
+\fbox
+{
+	\parbox{0.8\textwidth}
+	{
+			\textbf{\underline{Interpolation}:} Calculating points \textit{between} smallest and largest $x_i$ values.\\
+			\textbf{\underline{Extrapolation}:} Calculating point \textit{outside} range of $x_i$ values.\\
+	
+	}
+}
+\end{center}
+
+\section{Lagrangian Interpolation}
+
+
+	\noindent \textbf{Example:} Three Data Points $(x_0,y_0)(x_1,y_1)(x_2,y_2)$
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor= west},
+	every axis y label/.style={at={(current axis.above origin)},anchor= south},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-0.18,     % start the diagram at this x-coordinate
+        xmax= 8,    % end   the diagram at this x-coordinate
+        ymin=-0.2,     % start the diagram at this y-coordinate
+        ymax= 4,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=$x$,
+        ylabel=$y$,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside,
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.5:8, blue, thick,samples=250] {0.125*(x-6)*(x-6)+0.5}; % Parabola
+ 	\addplot[domain=-0.2:2, red, dashed,samples=2] {2.5} node[left, pos=0] {$y_0$}; % y0
+	\addplot[domain=-0.2:4, red, dashed,samples=2] {1} node[left, pos=0] {$y_1$}; % y1
+	\addplot[domain=-0.2:7, red, dashed,samples=2] {0.625} node[left, pos=0] {$y_2$}; % y2
+
+	\addplot[dashed,red,mark=none] coordinates{(2,-0.2)(2,2.5)} node[below, pos=0] {$x_0$}; %x0
+	\addplot[dashed,red,mark=none] coordinates{(4,-0.2)(4,1)} node[below, pos=0] {$x_1$}; %x1
+	\addplot[dashed,red,mark=none] coordinates{(7,-0.2)(7,0.625)} node[below, pos=0] {$x_2$}; %x2
+ 
+	\addplot[red, only marks, mark=*] coordinates {(2,2.5)(4,1)(7,0.625)};
+
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\begin{tabbing}
+	Model: \hspace{0.1cm} \= $p(x) = A + Bx + Cx^2$\\
+	\> \qquad \quad \,\!\!  $\uparrow$ \quad \,\! $\uparrow$ \quad \;\;\! $\uparrow$\\
+	\> \qquad \quad \, parameters
+\end{tabbing}
+
+	How do we compute these parameters? Interpolating conditions lead to:
+
+\begin{center}
+	$y_0 = p(x_0) = A + Bx_0 + Cx_0 ^{\;2}$\\
+	\medskip
+	$y_1 = p(x_1) = A + Bx_1 + Cx_1 ^{\;2}$\\
+	\medskip
+	$y_2 = p(x_2) = A + Bx_2 + Cx_2 ^{\;2}$\\
+\end{center}
+
+This is a linear system:
+
+\begin{center}
+	$
+	\begin{pmatrix}
+		1 & x_0 & x_0^{\;2} \\
+		1 & x_1 & x_1^{\;2} \\
+		1 & x_2 & x_2^{\;2}
+	\end{pmatrix}
+	$
+	\nolinebreak
+	$
+	\begin{pmatrix}
+		A\\
+		B\\
+		C
+	\end{pmatrix}
+	$
+		=
+	$
+	\begin{pmatrix}
+		y_0\\
+		y_1\\
+		y_2	
+	\end{pmatrix}
+	$
+\end{center}
+
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+	\begin{center}
+		A Matrix of the form
+		\bigskip
+		
+			$\begin{pmatrix}
+				1 & x_0 & x_0^{\;2} & \cdots & x_0^{\; n}\\
+				\vdots & \vdots & \vdots & \ddots & \vdots\\
+				1 & x_n & x_n^{\;2} & \cdots & x_n^{\; n}
+			\end{pmatrix}$
+
+		\bigskip		
+		 is called a \textbf{Vandermonde Matrix}.
+	\end{center}
+	}
+}
+\end{center}
+
+\bigskip
+
+	\noindent It's determinant is
+
+\vspace{-0.75cm}
+
+\begin{center}
+	\begin{equation*}
+		\prod_{i<j}(x_i - x_j)
+	\end{equation*}
+\end{center}
+
+	\noindent so it will be non-zero when all the $x_i$'s are different. This restriction does not interfere with an interpolation problem,
+ 	since it also requires different $x_i$'s.
+
+\medskip
+
+\begin{center}
+\fbox{
+	\parbox{0.8\textwidth}
+	{
+		\medskip
+		\textbf{\underline{Theorem}:} For $n+1$ data points $(x_0, y_0), (x_1, y_1), ... (x_n, y_n)$ there is a unique
+		polynomial of degree $n$ interpolating these points.
+		\medskip
+	}
+}
+\end{center}
+
+	\noindent This polynomial could be computed by Gaussian Elimination, but usually that leads to numerical problems
+	(round-off errors will amplify). \textit{There is a smarter way!}
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax= 4,    % end   the diagram at this x-coordinate
+        ymin=-0.5,     % start the diagram at this y-coordinate
+        ymax= 1.5,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.5:8, blue, thick,samples=250] {(x-2)*(x-3.5)/2.5}; % Parabola
+ 	\addplot[domain=-0.1:1, red, dashed,samples=2] {1} node[left, pos=0] {1}; % y0
+
+
+	\draw [thick, gray,decorate,decoration={brace,amplitude=10pt,mirror},xshift=0.4pt,yshift=-0.4pt]
+		(axis cs:1,-0.25) -- (axis cs:2,-0.25) node[black,midway,yshift=-0.6cm] {};
+	\draw [thick, gray,decorate,decoration={brace,amplitude=10pt,mirror},xshift=0.4pt,yshift=-0.4pt]
+		(axis cs:2,-0.25) -- (axis cs:3.5,-0.25) node[black,midway,yshift=-0.6cm] {};
+
+
+	\addplot[dashed,red,mark=none] coordinates{(1,-0.1)(1,1)} node[below, pos=0] {$x_0$}; %x0
+	\addplot[red,mark=none] coordinates{(2,-0.1)} node[below, pos=0] {$x_1$}; %x1
+	\addplot[red,mark=none] coordinates{(3.5,-0.1)} node[below, pos=0] {$x_2$}; %x2
+	\addplot[mark=none] coordinates{(2.25,-0.4)} node[below, pos=0] {\small Not necessarily equidistant}; %x2
+ 
+	\addplot[red, only marks, mark=*] coordinates {(1,1)(2,0)(3.5,0)};
+
+
+    \end{axis}
+\end{tikzpicture}
+	\\
+	$L_0(x)=a(x-x_1)(x-x_2)$
+\end{center}
+
+	Choose:
+
+\begin{center}
+	$a =$ \Large{$\frac{1}{(x_0-x_1)(x_0-x_2)}$}
+
+	\normalsize
+	\bigskip
+
+	$\Rightarrow \; L_0(x) =$ \Large{$\frac{(x-x_1)(x-x_2)}{x_0-x_1)(x_0-x_2)}$}
+
+	\normalsize
+\end{center}
+
+	So:
+
+\begin{center}
+%\begin{math}
+$
+  \left.
+    \begin{array}{l}
+	L_0(x_0) = 1\\
+	L_0(x_1) = 0\\
+	L_0(x_2) = 0
+    \end{array}
+  \right\}
+	\text{This is the \textbf{interpolating parablola}}
+$
+%\end{math}
+
+	\bigskip
+
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax= 4,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax= 1.5,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.5:8, blue, thick,samples=250] {-(x-1)*(x-3.5)/1.5}; % Parabola
+ 	\addplot[domain=-0.1:2, red, dashed,samples=2] {1} node[left, pos=0] {1}; % y0
+
+	\addplot[dashed,red,mark=none] coordinates{(2,-0.1)(2,1)} node[below, pos=0] {$x_1$}; %x0
+	\addplot[red,mark=none] coordinates{(1,-0.1)} node[below, pos=0] {$x_0$}; %x1
+	\addplot[red,mark=none] coordinates{(3.5,-0.1)} node[below, pos=0] {$x_2$}; %x2
+
+ 
+	\addplot[red, only marks, mark=*] coordinates {(1,0)(2,1)(3.5,0)};
+
+
+    \end{axis}
+\end{tikzpicture}
+
+	\bigskip
+
+	$L_1(x)=$ \Large{$\frac{(x-x_0)(x-x_2)}{(x_1-x_0)(x_1-x_2)}$}
+
+	\vspace{1.5cm}
+	\normalsize
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=12cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax= 4,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax= 1.5,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        %xticklabels={-2,-1.6,...,2},
+        %yticklabels={-8,-7,...,8},
+        %tick align=outside
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.5:8, blue, thick,samples=250] {(x-1)*(x-2)/3.75}; % Parabola
+ 	\addplot[domain=-0.1:3.5, red, dashed,samples=2] {1} node[left, pos=0] {1}; % y0
+%	\addplot[domain=-0.2:4, red, dashed,samples=2] {1} node[left, pos=0] {$y_1$}; % y1
+%	\addplot[domain=-0.2:7, red, dashed,samples=2] {0.625} node[left, pos=0] {$y_2$}; % y2
+
+
+	\addplot[dashed,red,mark=none] coordinates{(3.5,-0.1)(3.5,1)} node[below, pos=0] {$x_2$}; %x0
+	\addplot[red,mark=none] coordinates{(1,-0.1)} node[below, pos=0] {$x_0$}; %x1
+	\addplot[red,mark=none] coordinates{(2,-0.1)} node[below, pos=0] {$x_1$}; %x2
+%	\addplot[mark=none] coordinates{(2.25,-0.4)} node[below, pos=0] {\small Not necessarily equidistant}; %x2
+ 
+	\addplot[red, only marks, mark=*] coordinates {(1,0)(2,0)(3.5,1)};
+
+
+    \end{axis}
+\end{tikzpicture}
+
+	\bigskip
+	$L_2(x)=$ \Large{$\frac{(x-x_0)(x-x_1)}{(x_2-x_0)(x_2-x_1)}$}
+	\normalsize
+
+\fbox
+{
+	\parbox{0.75\textwidth}
+	{
+		Now with $(x_0, \, y_0)$,  $(x_1, \, y_1)$, and  $(x_2, \, y_2)$, the interpolating polynomial is:
+
+		\begin{center}
+			$p(x) = y_0 \cdot L_0(x) + y_1 \cdot L_1(x) + y_2 \cdot L_2(x)$
+		\end{center}
+	}
+}
+
+\end{center}
+
+\section{Newtonian Interpolation}
+	When data points are "added" the Lagrange polynomials have to be computed all over again. The Newton approach
+	is designed in a way that we can use previous calculations when interpolating with additional data points.\\ \\
+
+	\noindent \textbf{Example:} Three Coordinates (1,-2), (2,5), and (-1,-4)\\ \\
+
+	\noindent Align the coordinates in two separate columns:
+
+\begin{center}
+	\begin{tabular}{cc}
+	$x$ & $y$\\
+	\hline
+	1 & -2\\
+	2 & 5 \\
+	-1&-4
+	\end{tabular}
+\end{center}
+
+	\noindent Subtract the first x-coordinate from each subsequent coordinate, and write the difference in the next column to the left.
+	\vspace {-0.4cm}
+
+\begin{center}
+\begin{tikzpicture}
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) [red] at (1.5,2.5){1}; 
+	\node (C) [blue] at (1.5,1.5) {2};
+	\node (D)[blue] at (1.5,0.5) {-1};
+	\node (E) at (0.5,1.5) {\textbf{1}};
+	\node (F)  at (0.5,0.5) {\textbf{-2}};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {-2};
+	\node (c) at (2.5,1.5) {5};
+	\node (d) at (2.5,0.5) {-4};
+
+	\draw [->, thick, blue] (C) edge (E) (D) edge (F);
+	\draw [->, thick, red] (B.south) to [out=250, in = 30] (E.north east);
+	\draw [->, thick, red] (B.south) to  [out=250, in = 30] (F.north east);
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+
+\footnotesize
+
+	\node [blue] (L1) at (-0.35,0.5) {-1 - 1 =};
+	\node [blue]  (L2) at (-0.35,1.5) {2 - 1 =};
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+	
+	\noindent In the next column subtract the first value of that column from each subsequent value, just as you did in the first column:
+	\vspace {-0.4cm}
+
+
+\begin{center}
+\begin{tikzpicture}
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){1}; 
+	\node (C) at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E) [red] at (0.5,1.5) {1};
+	\node (F) [blue] at (0.5,0.5) {-2};
+	\node (G) at (-0.5,0.5) {\textbf{-3}};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {-2};
+	\node (c) at (2.5,1.5) {5};
+	\node (d) at (2.5,0.5) {-4};
+
+	\draw [->, thick, blue] (F) edge (G);
+	\draw [->, thick, red] (E.south) to [out=250, in = 30] (G.north east);
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+
+\footnotesize
+
+	\node [blue] (L1) at (-1.35,0.5) {-2 - 1 =};
+
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+	\noindent Repeat this process until there is a left-most column with only one value.\\
+
+	For the y-coordinates, the process is a bit different. Just like with the x-coordinates, subtract the first value in each column 
+	from all subsequent values in that column. Then, divide the resulting difference by the difference of the corresponding
+	x-values (i.e. the answers on the left side).
+
+\begin{center}
+\begin{tikzpicture}
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){1}; 
+	\node (C) at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E) [gray] at (0.5,1.5) {1};
+	\node (F) [gray] at (0.5,0.5) {-2};
+	\node (G) at (-0.5,0.5) {-3};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b)[red] at (2.5,2.5) {-2};
+	\node  (c) [blue] at (2.5,1.5) {5};
+	\node  (d) [blue] at (2.5,0.5) {-4};
+	\node (e) at (4.75,1.5) {\textbf{7}};
+	\node (f) at (4.75,0.5) {\textbf{1}};
+
+	\node(L1)  [blue]  at (3.8,0.5) {$\frac{-4-(-2)}{-2}$=};
+	\node (L2) [blue]  at (3.8,1.5) {$\frac{5-(-2)}{1}$=};
+
+
+	\draw [->, thick, blue] (c) to (L2);
+	\draw [->, thick, red] (b.east) to [out=0, in = 100] (L2.north);
+	\draw [->, thick, gray] (E.south east) to  [out=300, in = 210] (L2.south west);
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+	\noindent Repeat this process until there is a right-most column with only one value:
+
+\begin{center}
+\begin{tikzpicture}
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){1}; 
+	\node (C) at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E)at (0.5,1.5) {1};
+	\node (F) at (0.5,0.5) {-2};
+	\node (G) [gray] at (-0.5,0.5) {-3};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e) [red] at (3.5,1.5) {7};
+	\node (f) [blue] at (3.5,0.5) {1};
+	\node (g) at (5.3, 0.5) {\textbf{2}};
+
+	\node(L2)  [blue]  at (4.7,0.5) {$\frac{1-7}{-3}$=};
+
+	\draw [->, thick, blue] (f) to (L2);
+	\draw [->, thick, red] (e.east) to [out=0, in = 100] (L2.north);
+	\draw [->, thick, gray] (G.south east) to  [out=330, in = 210] (L2.south west);
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+	\noindent How do we turn this into a polynomial?
+
+\begin{center}
+	\begin{tikzpicture}[square/.style={regular polygon,regular polygon sides=4}]
+
+
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) [blue, square, draw] at (1.5,2.5){1}; 
+	\node (C) [blue, square, draw] at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E)at (0.5,1.5) {1};
+	\node (F) at (0.5,0.5) {-2};
+	\node (G) at (-0.5,0.5) {-3};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) [red, square, draw] at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e) [red, square, draw] at (3.5,1.5) {7};
+	\node (f) at (3.5,0.5) {1};
+	\node (g) [red, square, draw] at (4.5, 0.5) {2};
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+	\noindent Beginning with your first y-coordinate, multiply the first value in each y-column as a coefficient in a polynomial
+	of increasing degree, starting with degree 0.  These polynomials will be composed of expressions of $(x-x_{n-1})$  Where
+	$x_{n-1}$ are your original x-coordinates. Add these polynomials together for the desired formula:
+
+\begin{tabbing}
+	\hspace{3.3cm} \= $p(x)$ \hspace{1mm} \=  $= \red -2 \, \black \cdot \!\!\!\!\!\!\!
+	\underbrace{1}_{\text{\footnotesize{degree 0}}} \!\!\!\!\!\!
+	+ \; \red 7 \black \underbrace{(x-\blue 1 \black)} _{\text{\footnotesize{degree 1}}}
+	+ \; \red 2 \black \underbrace{(x-\blue 1 \black)(x-\blue 2 \black)}_{\text{\footnotesize{degree 2}}}$\\ \\
+
+	\>\>$= -2 + 7x - 7 + 2x^2 - 6x + 4$\\ \\
+
+	\>\>$= 2x^2 + x -5$\\
+\end{tabbing}
+
+	What happens if we want to add an additional data-point?\\
+
+	\noindent \textbf{Example:} Three Coordinates (1,-2), (2,5), (-1,-4), and (-2, -11):
+
+\begin{center}
+\begin{tikzpicture}[square/.style={regular polygon,regular polygon sides=4}]
+
+
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){\textbf{1}}; 
+	\node (C) at (1.5,1.5) {\textbf{2}};
+	\node (D) at (1.5,0.5) {\textbf{-1}};
+	\node (E) at (1.5, -0.5) {-2};
+	\node (F)at (0.5,1.5) {1};
+	\node (G) at (0.5,0.5) {-2};
+
+	\node (I) at (-0.5,0.5) {-3};
+
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {\textbf{-2}};
+	\node  (c) at (2.5,1.5) {\textbf{5}};
+	\node  (d) at (2.5,0.5) {\textbf{-4}};
+	\node (e)  at (2.5, -0.5) {-11};
+	\node (f)  at (3.5,1.5) {7};
+	\node (g) at (3.5,0.5) {1};
+
+	\node (i) at (4.5, 0.5) {2};
+
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+	\noindent If we begin building the triangle as we did before, we get the same values we did previously for the first three
+	three coordinates. \textit{The same points in the same order will always result in the same triangle.}  Because of this,
+	adding a new coordinate just means adding a new row.
+
+\begin{center}
+\begin{tikzpicture}[square/.style={regular polygon,regular polygon sides=4}]
+
+
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){1}; 
+	\node (C) at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E) at (1.5, -0.5) {\textbf{-2}};
+	\node (F)at (0.5,1.5) {1};
+	\node (G) at (0.5,0.5) {-2};
+	\node (H) at (0.5, -0.5) {-3};
+	\node (I) at (-0.5,0.5) {-3};
+	\node (J) at (-0.5, -0.5) {-4};
+	\node (K) at (-1.5, -0.5) {-1};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e)  at (2.5, -0.5) {\textbf{-11}};
+	\node (f)  at (3.5,1.5) {7};
+	\node (g) at (3.5,0.5) {1};
+	\node (h) at (3.5,-0.5) {3};
+	\node (i) at (4.5, 0.5) {2};
+	\node (j) at (4.5, -0.5) {1};
+	\node (k) at (5.5, -0.5) {1};
+	\node (l)[red] at (2, -1.2) {\textit{Newly calculated values}};
+	\node (m) [blue] at (4.3, 3.1) {\textit{Original values}};
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+	\draw [red, dashed] (-2,-0.1) to (6,-0.1);
+	\draw [red, dashed] (-2,-0.9) to (6,-0.9);
+	\draw [red, dashed] (-2,-0.1) to (-2,-0.9);
+	\draw [red, dashed] (6,-0.1) to (6,-0.9);
+	\draw [blue, dashed] (-1, 0.1) to (5, 0.1);
+	\draw [blue, dashed] (-1, 2.9) to (5, 2.9);
+	\draw [blue, dashed] (-1, 0.1) to (-1, 2.9);
+	\draw [blue, dashed] (5, 0.1) to (5, 2.9);
+\normalsize
+
+\end{tikzpicture}
+\end{center}
+
+
+	\noindent Repeat the process from the first three coordinates for the new coordinate to obtain fourth row to the triangle.
+	Just as we were able to add the new coordinates to the last row of the triangle, we can append the new calculated values
+	to the end of our previously obtained polynomial:
+
+\begin{center}
+\begin{tikzpicture}[square/.style={regular polygon,regular polygon sides=4}]
+
+
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) [square, draw] at (1.5,2.5){1}; 
+	\node (C) [square, draw] at (1.5,1.5) {2};
+	\node (D) [blue, square, draw] at (1.5,0.5) {-1};
+	\node (E) at (1.5, -0.5) {-2};
+	\node (F)at (0.5,1.5) {1};
+	\node (G) at (0.5,0.5) {-2};
+	\node (H) at (0.5, -0.5) {-3};
+	\node (I) at (-0.5,0.5) {-3};
+	\node (J) at (-0.5, -0.5) {-4};
+	\node (K) at (-1.5, -0.5) {-1};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) [square, draw] at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e)  at (2.5, -0.5) {-11};
+	\node (f)  [square, draw] at (3.5,1.5) {7};
+	\node (g) at (3.5,0.5) {1};
+	\node (h) at (3.5,-0.5) {3};
+	\node (i) [square, draw] at (4.5, 0.5) {2};
+	\node (j) at (4.5, -0.5) {1};
+	\node (k) [red, square, draw] at (5.5, -0.5) {1};
+
+	\draw [thick, black] (1.25,3) to (2.75,3);
+\normalsize
+
+\end{tikzpicture}
+	\vspace{0.5cm}\\
+	$p(x) = \underbrace{-2 \cdot 1 + 7(x-1) + 2(x-1)(x-2)}_{\text{\footnotesize{previously obtained}}} + \; \red 1 \black \cdot
+	(x-1)(x-2)(x-(\blue -1 \black))$
+\end{center}
+
+	\noindent So we see that while the Newton method of interpolation is a bit complicated, it has the nice property of
+	allowing us to add more points of data without having to recalculate our previous values.
+
+\section {Interpolating Non-Polynomial Functions}
+
+\noindent \textbf{Example:} Use data points from the function $f(x) =$ \large{$\frac{1}{1+25x^2}$}:
+
+\begin{center}
+	\begin{tabular}{c|c|c|c|c|c|c}
+		$x$ & $\pm 1$ & $\pm 0.8$ & $\pm 0.6$ & $\pm 0.4$ & $\pm0.2$ & 0\\
+		\hline
+		$f(x)$ & 0.038 & 0.058 & $\frac{1}{10}$ & $\frac{1}{5}$ &  $\frac{1}{2} $ & 1
+	\end{tabular}
+\end{center}
+
+\begin{figure}[!htb]
+	% r - right
+	% l - left
+	% o - outside edge
+	% i - inside edge
+	\center{\includegraphics[width=0.8\linewidth]{Oscillations1.png}}
+
+	\caption{We observe high oscillations between the interpolated data points.}\label{fig:Oscillations 1}
+\end{figure}
+\FloatBarrier
+
+	\noindent What is going on here?
+	\begin{itemize}
+		\item We try to reconstruct a function that has non-polynomial behavior (horizontal asymptote).
+		\item Equidistant points create extra trouble.  \textit{Cluster points at the end points to obtain better results.}
+	\end{itemize}
+
+	 \noindent Let's try more midpoints: $0, \,\pm0.1, \,\pm0.2...\,\pm1$. Now we have 21 points instead of 11:
+
+\begin{figure}[!htb]
+	% r - right
+	% l - left
+	% o - outside edge
+	% i - inside edge
+	\center{\includegraphics[width=0.8\linewidth]{Oscillations2.png}}
+
+	\caption{Increasing the number of points leads to more oscillations.}\label{fig:Oscillations 2}
+\end{figure}
+\FloatBarrier
+
+\section{Spline Interpolation}
+
+	\noindent Increasing the number of data points in our interpolating polynomial leads to worse results.  What is a practical solution?
+	We could try using piecewise interpolation with small degree polynomials.  The simplest case of this would be piecewise linear
+	 interpolation.
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+	xtick={-1,-0.8,-0.6,-0.4,-0.2,0.2,0.4,0.6,0.8, 1},
+	ytick={0.25,0.5,0.75,1},
+        grid = none ,
+        width=15cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-1.2,     % start the diagram at this x-coordinate
+        xmax= 1.2,    % end   the diagram at this x-coordinate
+        ymin=-0.05,     % start the diagram at this y-coordinate
+        ymax= 1,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+ 
+	\addplot[domain=-1.3:1.3, gray,thick, samples=125] {1/(1+25*x*x};
+
+
+   \addplot[blue, thick,] coordinates {(-1,0.0385)(-0.8,0.0588)(-0.6,0.1)(-0.4,0.2)(-0.2,0.5)(0,1)(0.2,0.5)(0.4,0.2)(0.6,0.1)(0.8,0.0588)(1,0.0385)};
+
+   \addplot[blue, only marks, mark=*] coordinates {(-1,0.0385)(-0.8,0.0588)(-0.6,0.1)(-0.4,0.2)(-0.2,0.5)(0,1)(0.2,0.5)(0.4,0.2)(0.6,0.1)(0.8,0.0588)(1,0.0385)};
+ 
+
+	\node(x1) at (axis cs: 1, -0.075){1};
+	\node(x2) at (axis cs: -1, -0.075){-1};
+	\node(y1) at (axis cs: -0.1, 1){1};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	\noindent Piece-wise linear interpolation gets rid of oscillations and is continuous, but usually isn't differentiable at the
+	interpolating points.
+
+
+\end{document}

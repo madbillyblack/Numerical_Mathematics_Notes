@@ -1,0 +1,36 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+
+\begin{tikzpicture}
+	\node (A) at (1.5,3.25) {$x$};
+	\node  (B) at (1.5,2.5){1}; 
+	\node (C) at (1.5,1.5) {2};
+	\node (D) at (1.5,0.5) {-1};
+	\node (E)at (0.5,1.5) {1};
+	\node (F) at (0.5,0.5) {-2};
+	\node (G) at (-0.5,0.5) {-3};
+	\node (a) at (2.5,3.25) {$y$};
+	\node (b) at (2.5,2.5) {-2};
+	\node  (c) at (2.5,1.5) {5};
+	\node  (d) at (2.5,0.5) {-4};
+	\node (e) at (3.5,1.5) {7};
+	\node (f) at (3.5,0.5) {1};
+	\node (g) at (4.5, 0.5) {2};
+
+%	\node(L2)  [blue]  at (4.7,0.5) {$\frac{1-7}{-3}$=};
+
+%	\draw [->, thick, blue] (f) to (L2);
+%	\draw [->, thick, red] (e.east) to [out=0, in = 100] (L2.north);
+%	\draw [->, thick, gray] (G.south east) to  [out=330, in = 210] (L2.south west);
+	\draw [thick, black] (1.25,3) to (2.75,3);
+
+\normalsize
+
+\end{tikzpicture}
+\end{document}
