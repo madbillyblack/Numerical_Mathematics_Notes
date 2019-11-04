@@ -1,0 +1,45 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\begin{document}
+	\begin{tikzpicture}
+
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+	%xtick={-1,-0.8,-0.6,-0.4,-0.2,0.2,0.4,0.6,0.8, 1},
+	%ytick={0.25,0.5,0.75,1},
+        grid = none ,
+        width=6cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 7,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 7,   % end   the diagram at this y-coordinate
+        %axis background/.style={fill=white},
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+
+
+  \addplot[red, only marks, mark=*] coordinates {(3,3)(6,5)};
+  \draw [red,dashed] (axis cs: -0.1,3) -- (axis cs: 3,3);
+  \draw [red,dashed] (axis cs: -0.1,5) -- (axis cs: 6,5);
+  \draw [red,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,3);
+  \draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,5);
+      
+
+	\node(zk)[red] at (axis cs: -0.6, 3){$z_k$};
+	\node(zk1)[red] at (axis cs: -0.9, 5){$z_{k+1}$};
+	\node(xk)[red] at (axis cs: 3,-0.5){$x_k$};
+	\node(xk1)[red] at (axis cs: 6,-0.5){$x_{k+1}$};
+    \end{axis}
+\end{tikzpicture}
+\end{document}
