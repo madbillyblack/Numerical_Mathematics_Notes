@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt,]{report}
+\documentclass[a4paper,12pt]{report}
 %\documentclass[a4paper,12pt,landscape,twocolumn]{report}
 \usepackage[a4paper, inner=1.7cm, outer=2.7cm, top=2cm, bottom=2cm,bindingoffset=1.2cm ]{geometry}
 
@@ -28,7 +28,7 @@
 \usepackage{placeins}
 \usetkzobj{all}
 \usetikzlibrary{shapes.geometric}
-
+\usepackage{multicol}
  
 
 \usetikzlibrary{arrows,angles}
@@ -52,7 +52,19 @@
 
 
 
+\makeatletter
+\def\thickhline{%
+  \noalign{\ifnum0=`}\fi\hrule \@height \thickarrayrulewidth \futurelet
+   \reserved@a\@xthickhline}
+\def\@xthickhline{\ifx\reserved@a\thickhline
+               \vskip\doublerulesep
+               \vskip-\thickarrayrulewidth
+             \fi
+      \ifnum0=`{\fi}}
+\makeatother
 
+\newlength{\thickarrayrulewidth}
+\setlength{\thickarrayrulewidth}{3\arrayrulewidth}
 
 
 
@@ -2442,9 +2454,9 @@ $s_1(x_2)=y_2 \quad \Rightarrow \; s_1(1)=-1\;\;\,$\\
 	\node(xk1)[red] at (axis cs: 6,-0.5){$x_{k+1}$};
     \end{axis}
 \end{tikzpicture}
-\medskip
-
- 	$s_k\, ''(x)= z_k +\frac{z_{k+1}-z_k}{x_{k+1}-x_k}$
+\linebreak
+	
+ 	$s_k\, ''(x)= z_k \, +$ \large $\frac{z_{k+1}-z_k}{x_{k+1}-x_k}$
 
 \end{center}
 \medskip
@@ -2452,19 +2464,22 @@ $s_1(x_2)=y_2 \quad \Rightarrow \; s_1(1)=-1\;\;\,$\\
 	\noindent We can abbreviate the expression $x_{k+1}-x_k$ as $\Delta_k$, resulting in:
 
 \begin{center}
-	$s_k\, ''(x)= z_k +\frac{z_{k+1}-z_k}{\Delta_k}$
+	
+	$s_k\, ''(x)= z_k \, +$ \large$\frac{z_{k+1}-z_k}{\Delta_k}$
 \end{center}
 
 	\noindent Integrate:
 % SUBPROBLEM???--------------------------------------------------------------------------------------------------------------------------------------------------------------
 \begin{center}
-	$s_k\, '(x) = C_k + z_k(x-x_k) + \frac{z_{k+1}-z_k}{\Delta_k} \cdot \frac{(x-x_k)^2}{6} $
+	
+	$s_k\, '(x) = C_k + z_k(x-x_k) + $ \large $\frac{z_{k+1}-z_k}{\Delta_k} \cdot \frac{(x-x_k)^2}{6} $
 \end{center}
 
 	\noindent Integrate once more:
 
 \begin{center}
-	$s_k(x) = D_k +  C_k(x-x_k) + \frac{z_k}{2}(x-x_k)^2 + \frac{z_{k+1}-z_k}{\Delta_k} \cdot \frac{(x-x_k)^3}{6} $
+	$s_k(x) = D_k +  C_k(x-x_k) + $ \large $ \frac{z_k}{2}$ \normalsize $(x-x_k)^2 + $ \large $\frac{z_{k+1}-z_k}{\Delta_k}
+	\cdot \frac{(x-x_k)^3}{6} $
 \end{center}
 
 	\noindent Use interpolation conditions to find $D_k$ and $C_k$:
@@ -2472,15 +2487,15 @@ $s_1(x_2)=y_2 \quad \Rightarrow \; s_1(1)=-1\;\;\,$\\
 \begin{center}
 	$y_k = s_k(x_k)=D_k$\\
 	\medskip
-	$y_{k+1} = s_k(x_{k+1}$\\
-	$= y_k + C_k \Delta_k + \frac{z_k}{2}\Delta_k\, ^2 + \frac{z_{k+1}-z_k}{\cancelto{1}{\Delta_k}} \cdot
+	$y_{k+1} = s_k(x_{k+1}) = y_k + C_k \Delta_k + $ \large $\frac{z_k}{2}$ \normalsize $\Delta_k\, ^2 + $
+	\large $\frac{z_{k+1}-z_k}{\cancelto{1}{\Delta_k}} \cdot
 		 \frac{\Delta_k^{\cancelto{2}{3}}}{6}$
 \end{center}
 
 	\noindent Solve for $C_k$:
 
 \begin{center}
-	$C_k = \frac{y_{k+1}-y_k}{\Delta_k} - \frac{z_k}{2}\Delta_k - \frac{z_{k+1}-z_k}{6}\Delta_k$\\
+	$C_k = $\large$\frac{y_{k+1}-y_k}{\Delta_k} - \frac{z_k}{2}$\normalsize$\Delta_k - $\large$\frac{z_{k+1}-z_k}{6}$\normalsize$\Delta_k$\\
 	\bigskip
 	$= \frac{y_{k+1}-y_k}{\Delta k} - \Big( \frac{z_{k+1}}{6} + \frac{z_k}{3}    \Big)\Delta_k$
 \end{center}
@@ -2488,19 +2503,317 @@ $s_1(x_2)=y_2 \quad \Rightarrow \; s_1(1)=-1\;\;\,$\\
 	\noindent Hence:
 
 \begin{center}
-	$s_k(x) = y_k +\Big[ \frac{y_{k+1} - y_k}{\Delta_k} - \big( \frac{z_{k+1}}{6} + \frac{z_k}{3} \Delta_k \big) \Big]$\\
+	$s_k(x) = y_k +\Big[$ \large $ \frac{y_{k+1} - y_k}{\Delta_k} - \big( \frac{z_{k+1}}{6} + \frac{z_k}{3}  \big)$ \normalsize $ \!\! \Delta_k \Big]$\\
 \bigskip
-	$s_k\, '(x) = \frac{y_{k+1} - y_k}{\Delta_k} - \big( \frac{z_{k+1}}{6} + \frac{z_k}{3} \big) \Delta_k + z_k(x-x_k)
-		+ \frac{z_{k+1} - z_k}{\Delta_k}\cdot \frac{(x-x_k)^2}{2}$\\
+	$s_k\, '(x) = $\large$\frac{y_{k+1} - y_k}{\Delta_k}$\normalsize$ - \big( $\large$ \frac{z_{k+1}}{6} + \frac{z_k}{3} $\normalsize$ \big)
+	\Delta_k + z_k(x-x_k) + $\large$ \frac{z_{k+1} - z_k}{\Delta_k}\cdot \frac{(x-x_k)^2}{2}$\\
 	\bigskip
-	$s_{k+1}\, '(x) = \frac{}{}$\\
+	\normalsize
+	$s_{k+1}\, '(x) = $\large$ \frac{y_{k+2} - y_{k+1}}{\Delta_{k+1}}$\normalsize$ - \big( $\large$ \frac{z_{k+2}}{6}
+	 + \frac{z_{k+1}}{3}$\normalsize$ \big) \Delta_{k+1} + z_{k+1}(x-x_{k+1})
+	 + $\large$ \frac{z_{k+2}-z_{k+1}}{\Delta_{k+1}} \cdot \frac{(x-x_{k+1})^2}{2}$\\
+	 \bigskip
 \end{center}
 
+	\noindent Match the slopes at $x_{k+1}$, i.e. $s_k\,'(x_{k+1}) = s_{k+1}\,'(x_{k+1})$:
+
+\begin{center}
+	\large
+	$\frac{y_{k+1}-y_k}{\Delta_k} - \big(\frac{z_{k+1}}{6} - \frac{z_k}{3}  \big) $\normalsize$ \! \Delta_k + z_k \cdot \Delta_k
+	 + $\large$ \frac{z_{k+1}-z_k}{\cancel{\Delta_k}} \cdot \frac{\Delta_k\, ^{\cancel{2}}}{2} = \frac{y_{k+2}-y_{k+1}}{\Delta_{k+1}}
+	  - \big(\frac{z_{k+2}}{6} + \frac{z_{k+1}}{3} \big) $\normalsize$ \! \Delta_{k+1}$\\
+	  \medskip
+	  for $k = 0, 1, ... n-2$
+\end{center}
+
+	\noindent Rewrite:
+	
+\begin{center}
+	\fbox
+	{
+		\parbox{0.7\textwidth}
+		{
+			\begin{center}
+				\large
+				$\frac{\Delta_k}{6}$\normalsize$ \! z_k + \big( $\large$ \frac{\Delta_{k+1} + \Delta_k}{3} $\normalsize$ \big)
+				z_{k+1} + $\large$ \frac{\Delta_{k+1}}{6} $\normalsize$ \! z_{k+2} = $\large$ \frac{y_{k+2}-y_{k+1}}{\Delta_{k+1}}
+				- \frac{y_{k+1}-y_k}{\Delta_k}$\\
+				\normalsize
+				\bigskip
+				for $k = 0, 1, ... n-2$
+			\end{center}
+		}
+	}
+\end{center}
+\vspace{1cm}
+	\noindent \textbf{Example:} $n=5$\\
+	
+\vspace{-5mm}
+
+\begin{table}[!htb]
+\begin{center}
+\renewcommand*{\arraystretch}{2}
+	\setlength{\tabcolsep}{1.5mm}
+	\begin{tabular}{c|c|c|c|c|c|c}
+		$z_0$ & $z_1$ & $z_2$ & $z_3$ & $z_4$ & $z_5$ & RHS\\
+		\thickhline
+		$\frac{x_1-x_0}{6}$ & $\frac{x_2-x_1}{3} \! + \! \frac{x_1-x_0}{3}$ & $\frac{x_2-x_1}{6}$
+		& $0$ & $0$ & $0$ & $\frac{y_2-y_1}{x_2-x_1} \! -  \! \frac{y_1-y_0}{x_1-x_0}$\\
+		 
+		 \hline
+		 $0$ & $\frac{x_2-x_1}{6}$ & $\frac{x_3-x_2}{3} \! + \! \frac{x_2-x_1}{3}$ & $\frac{x_3-x_2}{6}$ 
+		 &  $0$ & $0$ & $\frac{y_3-y_2}{x_3-x_2} \! -  \! \frac{y_2-y_1}{x_2-x_1}$\\
+		  
+		 \hline
+		 $0$ & $0$ & $\frac{x_3-x_2}{6}$ & $\frac{x_4-x_3}{3} \! + \! \frac{x_3-x_2}{3}$ & $\frac{x_4-x_3}{6}$
+		 &$0$ & $\frac{y_4-y_3}{x_4-x_3} \! -  \! \frac{y_3-y_2}{x_3-x_2}$\\
+		  		  
+		 \hline
+		 $0$ & $0$ & $0$ & $\frac{x_4-x_3}{6}$ & $\frac{x_5-x_4}{3} \! + \! \frac{x_4-x_3}{3}$ &
+		 $\frac{x_4-x_3}{6}$ & $\frac{y_5-y_4}{x_5-x_4} \! -  \! \frac{y_4-y_3}{x_4-x_3}$\\ 
+\end{tabular}
+\end{center}
+\end{table}
+
+\vspace{-1cm}
+
+\begin{itemize}
+\item Symmetric Matrix (good)
+\item ``Positive Definite'' (better)
+\item Many zeros (perfect)
+\end{itemize}
+
+	\noindent This matrix can be simplified in the following ways:
+	\begin{center}
+		\large $\frac{x_p - x_q}{3}+\frac{x_q-x_r}{3}=\frac{x_p \cancel{- x_q + x_q} - x_r}{3} = \frac{x_p - x_r}{3}$
+	\end{center}
+
+	\noindent Also, if we choose natural splines for our end conditions, we can set $z_0$ and $z_5$ to 0, thereby eliminating the first and
+	last columns of the matrix:
+
+\begin{table}[!htb]
+\begin{center}
+\renewcommand*{\arraystretch}{2}
+	\begin{tabular}{c|c|c|c|c}
+		$z_1$ & $z_2$ & $z_3$ & $z_4$ & RHS\\
+		\thickhline
+		 \large $\frac{x_2-x_1}{3} \! + \! \frac{x_1-x_0}{3}$ & $\frac{x_2-x_1}{6}$ & \normalsize $0$ & $0$
+		 & \large $\frac{y_2-y_1}{x_2-x_1} \! - \! \frac{y_1-y_0}{x_1-x_0}$\\
+		 
+		 \hline
+		\large $\frac{x_2-x_1}{6}$ & $\frac{x_3-x_2}{3} \! + \! \frac{x_2-x_1}{3}$ & $\frac{x_3-x_2}{6}$ & \normalsize $0$
+		  & \large $\frac{y_3-y_2}{x_3-x_2} \! - \! \frac{y_2-y_1}{x_2-x_1}$\\
+		  
+		 \hline
+		 $0$ & \large $\frac{x_3-x_2}{6}$ & $\frac{x_4-x_3}{3} \! + \! \frac{x_3-x_2}{3}$ & $\frac{x_4-x_3}{6}$
+		  & $\frac{y_4-y_3}{x_4-x_3} \! - \! \frac{y_3-y_2}{x_3-x_2}$\\
+		  		  
+		 \hline
+		 $0$ & $0$ & \large $\frac{x_4-x_3}{6}$ & $\frac{x_5-x_4}{3} \! + \! \frac{x_4-x_3}{3}$
+		  & $\frac{y_5-y_4}{x_5-x_4} \! - \! \frac{y_4-y_3}{x_4-x_3}$\\ 
+\end{tabular}
+\end{center}
+\end{table}
+
+	\noindent Such a system can be solved very quickly.
+	\begin{itemize}
+		\item $z_0, z_1, ... z_5$ (Second Derivatives)
+		\item Very little error propogation (Positive Definite)
+	\end{itemize}
+
+\bigskip
+
+	\noindent Plug in to obtain splines:
+
+\begin{center}
+	$s_k(x) = y_k + ...$ \large$ \cdot \frac{(x-x_k)^3}{3}$\\
+	\bigskip
+	
+	$s(x) =
+  \left\{
+    \begin{array}{l}
+	s_0(x) \quad \text{if} x \in [x_0,x_1]\\
+	s_1(x) \quad \text{if} x \in [x_1,x_2]\\
+	\qquad \vdots \\
+	s_{n-1}(x) \quad \text{if} x \in [x_{n-1},x_n]
+    \end{array}
+  \right.
+$
+\end{center}
+
+\chapter{Numerical Differentiation}
 
 
+	Differentiation rules from Calculus require a function.  How do we differentiate when we are only given a set of data points?\\
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=12cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 16,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 10,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+  \addplot[red, only marks, mark=*] coordinates {(2,9)(4,5)(7,3)(9,7)(12,2)(15,5)};
+	\node(xy0)[red] at (axis cs: 3.3,9.2){$(x_0,y_0)$};
+	\node(xyn)[red] at (axis cs: 16.3, 5.5){$(x_n,y_n)$};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	\noindent One option is to use interpolation. We can consider these points as samples of a graph $y = f(x)$.\\
+	
+	\noindent Another option is to look at the definition of the derivative:
+	
+\begin{center}
+	$f^\prime(a) = \lim\limits_{h\to0}$\large$\frac{f(a+h)-f(a)}{h} \approx \frac{f(a+h)-f(a)}{h}$ \qquad \normalsize When $h$ is close to 0.
+	\bigskip
+\end{center}
+
+	\noindent Since we cannot get arbitrarily close, let's use the closest value available.
+
+\begin{multicols}{2}
+\begin{center}
+	\textbf{\underline{Forward Difference}}\\
+	\medskip
+	$f^\prime(a) \approx \, $\large$ \frac{f(a+h)-f(a)}{h}$\\
+	\normalsize
+	\bigskip
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax= 7,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 7,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+  \addplot[red, only marks, mark=*] coordinates {(3,5)(6,2)};
+  \draw [red,dashed] (axis cs: -0.1,5) -- (axis cs: 3,5);
+  \draw [red,dashed] (axis cs: -0.1,2) -- (axis cs: 6,2);
+  \draw [red,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,5);
+  \draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,2);
+  \draw[blue,thick](axis cs: 3,5)--(axis cs: 6,2);
+      
+	\node(y1)[red] at (axis cs: -1, 5){$f(a)$};
+	\node(y2)[red] at (axis cs: -1.6, 2){$f(a\!+ \! h)$};
+	\node(x1)[red] at (axis cs: 3,-0.5){$a$};
+	\node(x2)[red] at (axis cs: 6,-0.5){$a \! + \! h$};
+    \end{axis}
+\end{tikzpicture}
+
+	\textbf{\underline{Backward Difference}}\\
+	\medskip
+	$f^\prime(a) \approx \, $\large$ \frac{fa-h)-f(a)}{-h}$\\
+	\normalsize
+	\bigskip
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax= 7,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 7,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+  \addplot[red, only marks, mark=*] coordinates {(3,3)(6,5)};
+  \draw [red,dashed] (axis cs: -0.1,3) -- (axis cs: 3,3);
+  \draw [red,dashed] (axis cs: -0.1,5) -- (axis cs: 6,5);
+  \draw [red,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,3);
+  \draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,5);
+  \draw[blue,thick](axis cs: 3,3)--(axis cs: 6,5);
+      
+	\node(y1)[red] at (axis cs: -1, 5){$f(a)$};
+	\node(y0)[red] at (axis cs: -1.6, 3){$f(a \!- \! h)$};
+	\node(x0)[red] at (axis cs: 3,-0.5){$a \! -\! h$};
+	\node(x1)[red] at (axis cs: 6,-0.5){$a$};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\end{multicols}
 
 
+% bottom half of last page of 29.4.19 omitted----------------------------------------------------------------------------------------------------------------------------
+%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+	Which form is better?  Should we average these values for a better approximation?  Certainly, the approximations improve when the
+	so-called \textit{step size h} becomes smaller.  We want some quantitative measure.\\
+	
+	\noindent We can use Taylor series to find out more details:
+	
+\begin{center}
+	\fbox
+	{
+		\parbox{0.7\textwidth}
+		{
+			\textbf{\underline{Taylor Series}:}
+			\begin{center}
+				$f(x) = f(a) + f^\prime(a)(x-a) +$ \large $\frac{f^{\prime \prime}(a)}{2!}$\normalsize$(x-a)^2 +$
+				\large $\frac{f^{\prime \prime \prime}(a)}{3!}$\normalsize $(x-a)^3 ...$
+			\end{center}
+		}
+	}
+\end{center}
+	\medskip
+	\noindent Plug in $x =  a+ h \: \Leftrightarrow \: x - a = h$ to obtain:
+
+\begin{center}
+	$f(a+h) = f(a) + f^\prime(a) \dot h + $ \large $\frac{f^{\prime \prime}(a)}{2!}$ \normalsize $\! \!h^2 +$ \large
+	$\frac{f^{\prime \prime \prime}(a)}{3!}$ \normalsize $\!\! h^3 +...$ 
+\end{center}
+	\bigskip
+
+	\noindent Then our forward difference turns into:
+
+\begin{center}
+	\large $\frac{f(a+h)-f(a)}{h} = \frac{\cancel{f(a)} + \big( f^\prime(a)\cancel{h} +\frac{f^{\prime \prime}}{2!}h^{\cancel{2}+...}
+	\big) - \cancel{f(a)} }{\cancel{h}}$ \normalsize \\
+	\bigskip
+	 
+	$
+	= \underbrace{f^\prime(a)}_{\text{wanted}}
+	+ \underbrace{ \!\!\!\!\!\! \overbrace{\frac{f^{\prime \prime}(a)}{2!}h}^{\text{dominating term}} \!\!\!\!\!\! + \frac{f^{\prime \prime \prime}(a)}{3!}h^2}_{\text{truncation error}} + ...
+	$
+\end{center}
+
+	\noindent The truncation error is approximately of the form $constant \cdot h^1$. If we divide the step size by 10, the error should become
+	smaller by a factor of 10. We say the forward difference is a \textit{first order} approximation for the derivative.\\
+	
+	\noindent Now, let's analyze the backward difference: Plug in $x = a - h$ in the Taylor series to obtain:
 
 \end{document}
 
