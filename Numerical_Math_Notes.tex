@@ -2896,17 +2896,135 @@ $
 	\large $= \frac{1}{2h} \big(2f^\prime(a) \cdot h + \frac{f^{\prime \prime \prime}(a)}{3!} h^3 + ... \big) = \underbrace{f^\prime(a)}_{\text{wanted}} + \underbrace{\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\! \overbrace{\frac{f^{\prime \prime \prime}(a)}{3!}h^2}^{{\text{Dominating term now dependent upon}\, h^2}} \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!\!           +...}_{\text{truncation error}}$
 \end{center}
 	
-%INSERT Centered Difference Comparison here--------------------------------------------------------------------------------------------------------------------
-%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%INSERT Centered Difference Comparison here-------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=0.8\linewidth]{ExcelDifference2.png}}
+
+	\caption{Round-off error vs stepsize h for $f(x) = \sin x$ }\label{fig:Excel Difference}
+\end{figure}
+\FloatBarrier
+
+
+%------------------------------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------------------------------------------------------------------
 
 	\noindent For the centered difference formula, the truncation error is dominated by $constant\cdot h^2$.  Reducing the step size by a factor of 10 reduces error by a factor of 100.  \textit{This is a second-order approximation method.}\\
 	
 \underline{\textit{Side Remark}}: The Excel experiments showed round-off errors for small step sizes because the difference formulas involve a subtraction of nearly equal numbers.
 
 \begin{center}
-	\Large $\frac{\sin(a+h) - \sin a}{h}$
+	\textbf{Example:} Forward Difference: \qquad \Large $\frac{\sin(a+h) - \sin a}{h}$
 \end{center}
 
+	\noindent How can we avoid this?
+	
+\begin{center}
+	$\sin (x+y) - \sin (x-y) = \sin x \cos y + \sin y \cos x - \big( \sin x \cos(-y) + \sin(-y) \cos x \big)$\\
+	\bigskip
+	$= \cancel{\sin x \cos y} + \sin y \cos x - \big( \cancel{ \sin x \cos y } - \sin y \cos x \big)$\\
+	\bigskip
+	$= 2 \sin y \cdot \cos x$\\
+\end{center}
+	
+	\noindent We need:
 
+\begin{center}
+	\vspace{-5mm}
+	$x+y = a + h$\\
+	$x-y = a$\\
+	\medskip
+\end{center}
+
+	\noindent Adding:
+	
+\begin{center}
+	\vspace{-5mm}
+	$2x = 2a+h \Leftrightarrow x = a + \frac{h}{2}$\\
+	\medskip
+\end{center}
+	
+	\noindent Subtracting:
+	
+\begin{center}
+	\vspace{-5mm}
+	$2y = h \Leftrightarrow y = \frac{h}{2}$\\
+	\medskip
+\end{center}
+
+	\noindent We find:
+	
+\begin{center}
+		\vspace{-5mm}
+		$\sin (a+h) - sin (a) = 2 \sin \frac{h}{2} \cdot \big( a + \frac{h}{2} \big)$\\
+		\medskip
+\end{center}
+
+	\noindent \underline{Excel Results}: We no longer see \textit{any} round-off error, using the product formula instead of subtraction.\\
+	
+	How can we find \textbf{finite difference} formulas that fit the given problem?\\
+	
+	\noindent Use quadratic interpolation for three points.
+
+\begin{multicols}{2}
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=9cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax= 4,    % end   the diagram at this x-coordinate
+        ymin=-0.1,     % start the diagram at this y-coordinate
+        ymax= 1.3,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+        \addplot[domain=-0.25:3.75, blue, thick,samples=250] {-1/8*(x-2.5)^2 +1}; % Parabola
+
+	\addplot[dashed,red,mark=none] coordinates{(0.75,-0.05)(0.75,0.6171875)} node[above left, pos=1] {\footnotesize{$f(a \! - \! h) \!\!\!\!$}}; %x0
+	\addplot[dashed,red,mark=none] coordinates{(2,-0.05)(2,0.96875)} node[above, pos=1] {\footnotesize{$f(a)$}}; %x0
+	\addplot[dashed,red,mark=none] coordinates{(3.25,-0.05)(3.25,0.9296875)} node[above right, pos=1] {\footnotesize{$f(a \! + \! h)$}}; %x0
+	\addplot[red,mark=none] coordinates{(0.75,-0.05)} node[below, pos=0] {$a-h$}; %x1
+	\addplot[red,mark=none] coordinates{(2,-0.1)} node[below, pos=0] {$a$}; %x2
+	\addplot[red,mark=none] coordinates{(3.25,-0.05)} node[below, pos=0] {$a+h$}; %x2
+
+	\addplot[red, only marks, mark=*] coordinates {(0.75,0.6171875)(2,0.96875)(3.25,0.9296875)};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	\center \underline{Interpolating parabola}:
+
+
+\begin{flushright}
+	\vspace{-5mm}
+	$p(x) = f(a-h)$ \large $\!\! \frac{\big( x-a \big) \big( x-(a+h) \big)}{\big(a-h-a \big) \big( a-h-(a+h) \big)}$\\
+ 	\medskip
+ 	\normalsize $ + f(a)$  \large $\!\! \frac{\big( x-(a-h) \big) \big( x-(a+h) \big)}{ a- \big( a-h \big)  \big( a-(a+h) \big)}$\\
+ 	\medskip
+ 	\normalsize $+ f(a+h)$ \large $\!\! \frac{\big( x-(a-h) \big) \big( x-a \big)}{\big( a+h - (a-h) \big) \big( (a+h) -a \big)}$
+
+\end{flushright}
+\end{multicols}
+
+\vspace{5mm}
+
+\begin{center}
+	\normalsize $=f(f-h)$ \large $\frac{ x^2-(2a+h)x + a(a+h) }{ -h(-2h) }$ \normalsize $f(a)$ \large $\frac{(x-a)^2-h^2}{h \cdot (-h)}$ \normalsize $+ f(a+h)$ \large $\!\! \frac{x^2-(2a-h)x + a(a-h) }{ 2h \dot h}$
+\end{center}
+	
+	\noindent Then $p^\prime (x) =$
+	
 \end{document}
 
