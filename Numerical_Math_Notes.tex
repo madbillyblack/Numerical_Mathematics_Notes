@@ -3026,5 +3026,157 @@ $
 	
 	\noindent Then $p^\prime (x) =$
 	
+\begin{center}
+\vspace{-3mm}
+	$f(a-h)$ \large $\!\! \frac{2x - (2a+h)}{2h^2}$ \normalsize $+ \, f(a)$ \large $\!\! \frac{2x-2a}{-h^2}$ \normalsize $+ \, f(a+h)$ \large $\!\! \frac{2x - (2a-h)}{2h^2}$
+\end{center}
+
+	\noindent What is happening at $a$?
+	
+\begin{center}
+\vspace{-3mm}
+	$p^\prime(a)= f(a-h)$ \large $\!\! \frac{- \cancel{h}}{2h^{\cancel{2}}}$ \normalsize $+ \, \cancel {f(a) \cdot 0} + f(a+h)$
+	\large $\!\!\frac{\cancel{h}}{2h^{\cancel{2}}}$
+	\normalsize $=\underbrace{   \frac{f(a+h) - f(a-h)}{2h} }_{\text{Centered Difference Formula}} $
+\end{center}
+	
+	\noindent  \underline{We learn}: To find a second order finite difference approximation use an interpolating parabola.
+	
+\section{Another Way of Creating Formulas:}
+
+	\textit{\Large{ Use Taylor Series}}\\
+	
+	\begin{multicols}{2}
+	
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax=11,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+ 
+  \draw [red,dashed] (axis cs: 2,-0.15) -- (axis cs: 2,.6);
+  \draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,.6);
+  \draw [red,dashed] (axis cs: 10,-0.15) -- (axis cs: 10,.6);
+  \draw [<->,thick, gray] (axis cs: 2.1,0.5) -- (axis cs: 5.9,0.5);
+   \draw [<->,thick, gray] (axis cs: 6.1,0.5) -- (axis cs: 9.9,0.5);
+      
+
+	\node(x0)[red] at (axis cs: 2,-0.5){$a$};
+	\node(x1)[red] at (axis cs: 6,-0.5){$a \! +\! h$};
+	\node(x2)[red] at (axis cs: 10,-0.5){$a \! +\! 2h$};
+	\node(h1)[gray] at (axis cs: 4, 1){$h$};
+	\node(h2)[gray] at (axis cs: 8, 1){$h$};
+    \end{axis}
+\end{tikzpicture}
+	
+	\vspace{5mm}
+		\noindent Find a second order formula for the derivative at $a$ when $\big(a, f(a) \big), \big(a+ h, f(a+h) \big), \big(a+2h, f(a+ 2h) \big)$
+		are given.  Derivative at left end point.
+	\end{multicols}
+	
+\begin{center}
+	$f(a+h) = f(a) + f^\prime (a)h \; +$ \large $\frac{f^{\prime \prime}(a)}{2!}$ \normalsize $\!\! h^2 \;
+	+ $ \large $\frac{f^{\prime \prime \prime}(a)}{3!}$ \normalsize $\! \! h^3 + ...$\\
+	
+	\bigskip
+	
+	$f(a+2h)= f(a) + f^\prime \cdot 2h + $ \large $ \frac{ f^{\prime \prime}(a) }{ 2! } $ \normalsize $\!\! 4h^2 +  $ \large $ \frac{f^{\prime \prime \prime}(a)}{3!} $ \normalsize $\!\! 8h^3 + ... $
+\end{center}
+
+	\noindent Structure of finite difference formula:
+	
+\begin{center}
+	$f^\prime (a) \approx A \cdot f(a) + B \cdot  f(a+h) + C \cdot f(a+2h) $\\
+	\bigskip
+	$f^ \prime (a) \approx A \cdot f(a) + B \! \cdot \! f(a) + B \! \cdot \! f^\prime (a)h +B$ \large $\! \! \frac{f^{\prime \prime}(a)}{2} $
+	\normalsize $h^2  + B$ \large $ \frac{ f^{\prime \prime \prime}(a)}{3!}$ \large $h^3$\\
+	\medskip
+	$+ C \cdot f(a) + C \cdot f^\prime (a)2h + C$\large $\frac{f^{\prime \prime}(a)}{2}$ \normalsize $4h^2 + C$
+	\large $ \frac{ f^{\prime \prime \prime}(a)}{3!} $ \normalsize $\!\! 8h^3$
+\end{center}
+
+	\noindent What do we want?
+
+\begin{tabbing}
+	\hspace{4cm} \= $A + B + C = 0$ \hspace{5mm} \= to get rid of $f(a)$\\ \\
+	\medskip
+	\> $hB + 2hC =1$ \> to get $f^\prime(a)$\\ \\
+	\>$\frac{B}{2}h^2 + \frac{C}{2}4h^2=0$ \> to get rid of $f^{\prime \prime(a)} \, \leftarrow$ \textit{truncation error}
+\end{tabbing}
+
+\vspace{5mm}
+
+\begin{multicols}{2}	
+\begin{center}
+\begin{tabular}{ccc|l}
+	$A$  &  $B$  &  $C$  &  $r.h.s.$\\
+	\hline
+	1 & 1 & 1 & 0 I\\
+	0 & 1 & 2 & $\frac{1}{h}$ II\\
+	0 & 1 & 4 & 0 III - II\\
+	\hline
+	1 & 1 & 1 & 0\\
+	0 & 1 & 2 & $\frac{1}{h}$ \\
+	0 & 0 & 2 & $\frac{-1}{h}$
+\end{tabular}
+\end{center}
+
+	\noindent \underline{\textit{Back Substitute}}\\
+	$C = \frac{-1}{2h}$\\
+	\\
+	Plug into II:\\
+	$B = \frac{1}{h}-2 \big( \frac{-1}{2h} \big)= \frac{2}{h}$\\
+	\\
+	Plug into I: \\
+	$A = -B - C = \frac{-2}{h} + \frac{1}{2h} = \frac{-4}{2h} + \frac{1}{2h}=\frac{-3}{2h}$
+\end{multicols}
+	
+	\noindent We obtain:
+	
+\begin{center}
+	\vspace{-3mm}
+	$f^\prime(a) \approx$ \large $\frac{-3}{2h}$ \normalsize $\!\!\! f(a) \, +$
+	\large $\frac{4}{2h}$ \normalsize $\!\!\! f(a \! + \! h) \, -$
+	\large $\frac{1}{2h}$ \normalsize $\!\!\! f(a \! + \! 2h)$\\
+	\bigskip
+	\Large $= \frac{ -3f(a) + 4f(a +  h) - f(a +2h)}{2h}$
+\end{center}
+
+\chapter{Numerical Integration}
+
+\begin{center}
+\fbox
+{
+	\parbox{0.8\textwidth}
+	{
+		\textbf{\underline{Fundamental Theorem of Calculus}:}\\
+		If $f$ is continuous on $[a,b]$ then
+		\begin{center}
+		\vspace{-1cm}
+			$$\int_{a}^{b}f(x) dx = F(b) - F(a)$$
+		\end{center}
+		where $F$ is any anti-derivative of $f$.
+
+	}
+}
+\end{center}
+
+
+	
 \end{document}
 
