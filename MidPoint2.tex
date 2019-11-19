@@ -1,0 +1,45 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\begin{document}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 10.5,4.08);
+\filldraw[fill=lightgray, draw=gray] (axis cs: 10.5,0) rectangle (axis cs: 18,1.92);
+
+
+ \addplot[domain=1.25:19, blue, thick,samples=250] {rad(-atan(x/2-5.25))+3}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(6.75,4.08)(14.25,1.92)};
+  \draw [blue,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,4.31);
+     \draw [red,dashed] (axis cs: 6.75,-0.5) -- (axis cs: 6.75,4.08);
+      \draw [red,dashed] (axis cs: 14.25,-0.5) -- (axis cs: 14.25,1.92);
+  \draw [blue,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,1.68);
+  
+
+	\node(a)[blue] at (axis cs: 3,-0.5){$a$};
+	\node(b)[blue] at (axis cs: 18,-0.5){$b$};
+	\node(MP1)[red] at (axis cs: 6.75,-1){\footnotesize{$a\!+\! \frac{1}{4}(b\!-\!a)$}};
+	\node(MP2)[red] at (axis cs: 14.25,-1){\footnotesize{$a\!+\! \frac{3}{4}(b\!-\!a)$}};
+    \end{axis}
+\end{tikzpicture}
+\end{document}

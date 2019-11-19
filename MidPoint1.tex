@@ -24,20 +24,19 @@
         enlargelimits=true,
         tension=0.08]
 
-  \addplot[red, only marks, mark=*] coordinates {(2,3)(6,5)(10,4)};
-  \draw [red,dashed] (axis cs: 2,-0.15) -- (axis cs: 2,.6);
- % \draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,.6);
-%  \draw [red,dashed] (axis cs: 10,-0.15) -- (axis cs: 10,.6);
-%  \draw[blue,thick](axis cs: 2,3)--(axis cs: 10,4);
-%  \draw [<->,thick, gray] (axis cs: 2.1,0.5) -- (axis cs: 5.9,0.5);
- %  \draw [<->,thick, gray] (axis cs: 6.1,0.5) -- (axis cs: 9.9,0.5);
-      
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 18,3);
 
-	\node(x0)[red] at (axis cs: 2,-0.5){$a$};
-%	\node(x1)[red] at (axis cs: 6,-0.5){$a \! +\! h$};
-%	\node(x2)[red] at (axis cs: 10,-0.5){$a \! +\! 2h$};
-%	\node(h1)[gray] at (axis cs: 4, 1){$h$};
-%	\node(h2)[gray] at (axis cs: 8, 1){$h$};
+
+ \addplot[domain=1.25:19, blue, thick,samples=250] {rad(-atan(x/2-5.25))+3}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(10.5,3)};
+  \draw [blue,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,4.31);
+     \draw [red,dashed] (axis cs: 10.5,-0.15) -- (axis cs: 10.5,3);
+  \draw [blue,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,1.68);
+  
+
+	\node(a)[blue] at (axis cs: 3,-0.5){$a$};
+	\node(b)[blue] at (axis cs: 18,-0.5){$b$};
+	\node(MP)[red] at (axis cs: 10.5,-0.75){$\frac{a+b}{2}$};
     \end{axis}
 \end{tikzpicture}
 \end{document}

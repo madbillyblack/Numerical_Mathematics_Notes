@@ -1,0 +1,42 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\begin{document}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax=1.15,    % end   the diagram at this x-coordinate
+        ymin=-0.15,     % start the diagram at this y-coordinate
+        ymax= 1.15,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 18,3);
+
+
+ \addplot[domain=0:1, blue, thick,samples=250] {exp(-x^2)}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(10.5,3)};
+  \draw [red,dashed] (axis cs: 1,-0.05) -- (axis cs: 1,1.15);
+
+  \draw [red,dashed] (axis cs: -0.05,1) -- (axis cs: 1.15,1);
+  
+
+	\node(a)[red] at (axis cs: -0.1,1){1};
+	\node(b)[red] at (axis cs: 1,-0.15){1};
+	\node(MP)[blue] at (axis cs: 0.35,1.15){\large{$y=e^{-x^2}$}};
+    \end{axis}
+\end{tikzpicture}
+\end{document}

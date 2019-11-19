@@ -1,0 +1,58 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\begin{document}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+        
+        \node(A1) at (axis cs: 3, 0){};
+        \node(A2) at (axis cs: 3, 2.5){};
+       \node(B1) at (axis cs: 18, 0){};        
+        \node(B2) at (axis cs: 18, 4){};
+         \node(MP1) at (axis cs: 10.5,-0.25){};
+         \node(MP2) at (axis cs: 10.5,3.25){};
+
+%\filldraw[fill=lightgray, draw = lightgray] (A1) rectangle (B2);
+
+\draw[draw = gray, thick,  fill = lightgray] (A1.center) -- (A2.center) -- (B2.center) -- (B1.center) -- cycle;
+
+%\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 10.5,4.08);
+%\filldraw[fill=lightgray, draw=gray] (axis cs: 10.5,0) rectangle (axis cs: 18,1.92);
+
+
+% \addplot[domain=1.25:19, blue, thick,samples=250] {rad(atan(x/2-5.25))+3}; % Function
+  \addplot[domain=1.25:19, blue, thick,samples=250] {(x-7)*(x-10)*(x-18)/(-840)+(x-3)*(x-10)*(x-18)/88+(x-3)*(x-7)*(x-18)/(-168)+(x-3)*(x-7)*(x-10)/660 +2}; % Function
+  \addplot[red, only marks, mark=*] coordinates {(3,2.5)(10.5,3.25)(18,4)};
+  \draw [red,dashed] (axis cs: 3,-0.15) -- (A2);
+     \draw [red,dashed] (MP1) -- (MP2);
+  %    \draw [red,dashed] (axis cs: 14.25,-0.5) -- (axis cs: 14.25,1.92);
+  \draw [red,dashed] (axis cs: 18,-0.15) -- (B2);
+  
+
+	\node(a)[red] at (axis cs: 3,-0.5){$a$};
+	\node(b)[red] at (axis cs: 18,-0.5){$b$};
+	%\node(MP1)[red] at (axis cs: 6.75,-1){\footnotesize{$a\!+\! \frac{1}{4}(b\!-\!a)$}};
+	%\node(MP2)[red] at (axis cs: 14.25,-1){\footnotesize{$a\!+\! \frac{3}{4}(b\!-\!a)$}};
+	
+    \end{axis}
+\end{tikzpicture}
+\end{document}

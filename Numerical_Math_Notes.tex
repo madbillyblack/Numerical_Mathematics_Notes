@@ -3162,7 +3162,7 @@ $
 \begin{center}
 \fbox
 {
-	\parbox{0.8\textwidth}
+	\parbox{0.6\textwidth}
 	{
 		\textbf{\underline{Fundamental Theorem of Calculus}:}\\
 		If $f$ is continuous on $[a,b]$ then
@@ -3171,12 +3171,302 @@ $
 			$$\int_{a}^{b}f(x) dx = F(b) - F(a)$$
 		\end{center}
 		where $F$ is any anti-derivative of $f$.
-
 	}
 }
 \end{center}
 
+	\noindent \textit{\underline{Problem}:} It may be difficult to find an anti-derivative or even impossible to write as a finite
+	 combination of ``basic functions''.  (Power series may help using infinite combinations but not all functions possess
+	 power series representation.)\\
+	 
+	 Another motivation: How do we integrate when the function is only known by some sample values?\\
+	 
+\begin{multicols}{2}
 
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+  \addplot[red, only marks, mark=*] coordinates {(2,5)(8,3)(13,4)(18,2)};
+  \draw [red,dashed] (axis cs: 2,-0.15) -- (axis cs: 2,.6);
+  \draw [red,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,.6);
+      
+	\node(a)[red] at (axis cs: 2,-0.5){$a$};
+	\node(b)[red] at (axis cs: 18,-0.5){$b$};
+    \end{axis}
+\end{tikzpicture}
+
+
+	\Large $$\!\!\!\!\!\!\!\! \int_{a}^{b} f(x)dx =  \text{?}$$
 	
+	\normalsize
+\end{multicols}
+
+	\noindent \textit{\underline{Already expected}:} Use polynomial interpolation or piecewise polynomial interpolation
+	(to avoid large oscillations).\\
+	
+	First let's consider the definition of the definite integral as limit of the Riemann Sums:
+
+
+\begin{multicols}{2}
+\begin{center}
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\textbf{\underline{Riemann Sum}}\\
+
+		\begin{center}
+		\vspace{-1.5cm}
+			$$\int_{a}^{b}f(x) dx =\lim\limits_{n\to \infty} \sum_{i=1}^{n} f(x_i^*) \cdot \frac{b-a}{n}$$
+		\end{center}
+
+	}
+}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 5.5,5);
+\filldraw[fill=lightgray, draw=gray] (axis cs: 5.5,0) rectangle (axis cs: 10.5,3);
+\filldraw[fill=lightgray, draw=gray] (axis cs: 10.5,0) rectangle (axis cs: 15.5,4);
+\filldraw[fill=lightgray, draw=gray] (axis cs: 15.5,0) rectangle (axis cs: 18,2);
+
+
+ \addplot[domain=1.25:19, blue, thick,samples=250] {-1/150*(x-8)*(x-13)*(x-18)+3/250*(x-3)*(x-13)*(x-18)-2/125*(x-3)*(x-8)*(x-18)+1/375*(x-3)*(x-8)*(x-13)}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(3,5)(8,3)(13,4)(18,2)};
+  \draw [red,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,5);
+    \draw [red,dashed] (axis cs: 8,-1) -- (axis cs: 8,3);
+     \draw [red,dashed] (axis cs: 13,-0.15) -- (axis cs: 13,4);
+  \draw [red,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,2);
+  \draw [red,dashed] (axis cs: 3,-1) -- (axis cs: 3,-0.7);
+  
+    \draw [<->, blue] (axis cs: 3,-0.9) -- (axis cs: 8,-0.9);
+  
+  
+	\node(a)[red] at (axis cs: 3,-0.5){$a$};
+	\node(xd)[blue] at (axis cs: 5.5,-1.1){\tiny{$\Delta x$}};
+	\node(x1)[gray] at (axis cs: 5.5,-0.35){\tiny{$x_1^*$}};
+	\node(x2)[gray] at (axis cs: 10.5,-0.35){\tiny{$x_2^*$}};
+	\node(x3)[gray] at (axis cs: 15.5,-0.35){\tiny{$x_3^*$}};
+	\node(b)[red] at (axis cs: 18,-0.5){$b$};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\end{multicols}
+	\noindent We obtain an approximation of the definite integral using a Riemann Sum:
+	
+\begin{center}
+	$$\int_{a}^{b}f(x) dx \approx \sum_{i=1}^{n} f(x_i^*) \cdot \frac{b-a}{n}$$
+\end{center}
+	
+\section{Midpoint Rule}
+\begin{multicols}{2}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-2,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 18,3);
+
+
+ \addplot[domain=1.25:19, blue, thick,samples=250] {rad(-atan(x/2-5.25))+3}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(10.5,3)};
+  \draw [blue,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,4.31);
+     \draw [red,dashed] (axis cs: 10.5,-0.15) -- (axis cs: 10.5,3);
+  \draw [blue,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,1.68);
+  
+
+	\node(a)[blue] at (axis cs: 3,-0.5){$a$};
+	\node(b)[blue] at (axis cs: 18,-0.5){$b$};
+	\node(MP)[red] at (axis cs: 10.5,-0.75){$\frac{a+b}{2}$};
+    \end{axis}
+\end{tikzpicture}
+
+\begin{center}
+	$$\int_{a}^{b}f(x) dx \approx
+	\underbrace{\underbrace{f \big( \frac{a+b}{2} \big)}_{\text{height}} \cdot \underbrace{(b-a)}_{\text{width}}}_{\text{area of rectangle}}$$
+\end{center}
+\end{multicols}
+\bigskip
+
+	\noindent \textbf{Example:}
+
+\vspace{-1cm}	
+\begin{center}
+	$$  \int_{0}^{1} e^{-x^2}dx \quad \approx \quad e^{-(\frac{1}{2})^2}\cdot (1-0) \quad = \quad 0.77...$$
+\end{center}
+
+	\noindent Is this approximation any good?
+	
+\begin{center}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-0.15,     % start the diagram at this x-coordinate
+        xmax=1.15,    % end   the diagram at this x-coordinate
+        ymin=-0.15,     % start the diagram at this y-coordinate
+        ymax= 1.15,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 18,3);
+
+
+ \addplot[domain=0:1, blue, thick,samples=250] {exp(-x^2)}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(10.5,3)};
+  \draw [red,dashed] (axis cs: 1,-0.05) -- (axis cs: 1,1.15);
+
+  \draw [red,dashed] (axis cs: -0.05,1) -- (axis cs: 1.15,1);
+  
+
+	\node(a)[red] at (axis cs: -0.1,1){1};
+	\node(b)[red] at (axis cs: 1,-0.15){1};
+	\node(MP)[blue] at (axis cs: 0.35,1.15){\large{$y=e^{-x^2}$}};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\bigskip
+	\noindent For more accuracy use the midpoint rule repeatedly.
+
+\begin{multicols}{2}	
+\begin{center}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax=19,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+\filldraw[fill=lightgray, draw=gray] (axis cs: 3,0) rectangle (axis cs: 10.5,4.08);
+\filldraw[fill=lightgray, draw=gray] (axis cs: 10.5,0) rectangle (axis cs: 18,1.92);
+
+
+ \addplot[domain=1.25:19, blue, thick,samples=250] {rad(-atan(x/2-5.25))+3}; % Parabola
+  \addplot[red, only marks, mark=*] coordinates {(6.75,4.08)(14.25,1.92)};
+  \draw [blue,dashed] (axis cs: 3,-0.15) -- (axis cs: 3,4.31);
+     \draw [red,dashed] (axis cs: 6.75,-0.5) -- (axis cs: 6.75,4.08);
+      \draw [red,dashed] (axis cs: 14.25,-0.5) -- (axis cs: 14.25,1.92);
+  \draw [blue,dashed] (axis cs: 18,-0.15) -- (axis cs: 18,1.68);
+  
+
+	\node(a)[blue] at (axis cs: 3,-0.5){$a$};
+	\node(b)[blue] at (axis cs: 18,-0.5){$b$};
+	\node(MP1)[red] at (axis cs: 6.75,-1){\footnotesize{$a\!+\! \frac{1}{4}(b\!-\!a)$}};
+	\node(MP2)[red] at (axis cs: 14.25,-1){\footnotesize{$a\!+\! \frac{3}{4}(b\!-\!a)$}};
+    \end{axis}
+\end{tikzpicture}
+\normalsize
+	$M_2 \! =\! f\big( a \!+\! \frac{1}{4}(b-a) \big) \frac{b\!-\!a}{2}  + f\big( a \!+\! \frac{3}{4}(b\!-\!a) \big) \frac{b-a}{2}$\\
+	\bigskip
+	$= \frac{b-a}{2} \Big[ f \big(a + \frac{1}{4}(b-a)\big) + f \big(a + \frac{3}{4}(b-a)\big) \Big]$
+
+\end{center}
+\end{multicols}
+
+	\noindent  Back to our example:
+	
+\begin{center}
+\vspace{-3mm}
+	$M_2 = \frac{1}{2} \big( e^{-(\frac{1}{4})^2}+  e^{-(\frac{3}{4})^2} \big) \approx 0.7545$\\
+
+\bigskip
+
+\fbox
+{
+	\parbox{0.6\textwidth}
+	{
+		\noindent \textit{\underline{Simple approach}:}\\
+		\vspace{-3mm}
+		\\
+		Compute $M_1, \, M_2, \, M_4, \, M_8, ...$ until $M_n \! \approx \! M_{2n}$ within our desired tolerance. Then:
+
+		\begin{center}
+		\vspace{-1cm}
+			$$\int_{a}^{b}f(x) dx \, \approx \, M_{2n}$$
+		\end{center}
+	}
+}
+\end{center}
+
+	\noindent \textit{\underline{Be aware}:} With an increasing number of intervals, the summands become smaller and more
+	susceptible to round-off errors. They may add up to create a huge uncertainty.
+	
+\section{Trapezoid Rule}
+
+% FINISH TRAPEZOID RULE GRAPH ------------------------------------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 \end{document}
 
