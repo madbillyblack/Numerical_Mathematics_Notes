@@ -4,7 +4,7 @@
 \usepackage{tikz}
 
 \begin{document}
-	\begin{tikzpicture}
+\begin{tikzpicture}
     \begin{axis}[
         legend pos=south east,
         axis x line=middle,
@@ -15,10 +15,10 @@
         width=7cm,
         height=6cm,
         grid style={dashed, gray!1},
-        xmin=-2,     % start the diagram at this x-coordinate
+        xmin=-0.5,     % start the diagram at this x-coordinate
         xmax=19,    % end   the diagram at this x-coordinate
-        ymin=-1,     % start the diagram at this y-coordinate
-        ymax= 6,   % end   the diagram at this y-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax= 5,   % end   the diagram at this y-coordinate
         xlabel=$x$,
         ylabel=$y$,
         enlargelimits=true,
@@ -28,26 +28,22 @@
         \node(A2) at (axis cs: 3, 2.5){};
        \node(B1) at (axis cs: 18, 0){};        
         \node(B2) at (axis cs: 18, 4){};
-         \node(MP1) at (axis cs: 10.5,-0.25){};
-         \node(MP2) at (axis cs: 10.5,3.25){};
+         \node(MP1) at (axis cs: 10.5,0){};
+         \node(MP2) at (axis cs: 10.5,2.89){};
 
-\draw[draw = gray, thick,  fill = lightgray] (A1.center) -- (A2.center) -- (B2.center) -- (B1.center) -- cycle;
+\draw[draw = gray, thick,  fill = lightgray] (A1.center) -- (A2.center) -- (MP2.center) -- (MP1.center) -- cycle;
+\draw[draw = gray, thick,  fill = lightgray] (MP1.center) -- (MP2.center) -- (B2.center) -- (B1.center) -- cycle;
   \addplot[domain=1.25:19, blue, thick,samples=250] {(x-7)*(x-10)*(x-18)/(-840)+(x-3)*(x-10)*(x-18)/88+(x-3)*(x-7)*(x-18)/(-168)+(x-3)*(x-7)*(x-10)/660 +2}; % Function
-  \addplot[red, only marks, mark=*] coordinates {(3,2.5)(18,4)};
-  \addplot[gray, only marks, mark=*] coordinates{(10.5,3.25)};
+  \addplot[red, only marks, mark=*] coordinates {(3,2.5)(6.75,3.5)(10.5,2.89)(18,4)};
   \draw [red,dashed] (axis cs: 3,-0.15) -- (A2);
-    \draw [red,dashed] (axis cs: -0.2,2.5) -- (A2);
-    \draw [red,dashed] (axis cs: -0.2,4) -- (B2);
-     \draw [gray,dashed] (MP1) -- (MP2);
+  \draw [red,dashed] (MP1) -- (MP2);
   \draw [red,dashed] (axis cs: 18,-0.15) -- (B2);
   
 
 	\node(a)[red] at (axis cs: 3,-0.5){$a$};
 	\node(b)[red] at (axis cs: 18,-0.5){$b$};
-	\node(fA)[red] at (axis cs: -2,2.5){$f(a)$};
-	\node(fB)[red] at (axis cs: -2,4){$f(b)$};
 	\node(a)[red] at (axis cs: 3,-0.5){$a$};
-	\node(yf)[blue] at (axis cs: 15.3,5){$y=f(x)$};
+	\node(yf)[blue] at (axis cs: 15.4,5){$y=f(x)$};
     \end{axis}
 \end{tikzpicture}
 \end{document}
