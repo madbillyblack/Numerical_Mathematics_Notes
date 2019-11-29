@@ -3881,14 +3881,129 @@ $
 	\node (H2b)[blue] at (6.1,0.2){\footnotesize{$:(4^2-1)$}};
 	\node (H3b)[blue] at (10.75,0.2){\footnotesize{$:(4^3-1)$}};
 	
-\normalsize
-	
-
-	
+\normalsize	
 \end{tikzpicture}
-
 \end{center}
 
+	Where do the powers of 4 come from? Using Taylor series, it can be shown that:\\
+	$$ T(h)= \int^b_a f(x) dx - \!\!\!\!\! \underbrace{C_1 h^2}_{Dominating} \!\!\!\!-\; C_2 h^4 - C_3 h^6 $$
+	
+	$$ T(\frac{1}{2}) = \int^b_a f(x) dx - \tilde{C}_1 \frac{h^2}{4} - \tilde{C}_2 \frac{h^4}{16} - \tilde{C}_3 \frac{h^6}{64} - ...$$
+	
+	\noindent The smaller the $h$, the closer $C_1 \approx \tilde{C}_1$, $C_2 \approx \tilde{C}_2$...
+	
+	$$ \frac{4T(\frac{h}{2})-T(h)}{3} =  \int^b_a f(x) dx 
+	\!\!\!\!\!\!\!\!\!\!\!\! \underbrace{\qquad \qquad}_{\text{eliminates dominating term}} \!\!\!\!\!\!\!\!\!
+	 - \quad \underbrace{\frac{\tilde{C}_2 \frac{h^4}{4}+C_2 h^4}{3}}_{C_2 \frac{5}{12}h^4}$$
+
+
+	Also worth noting is that because neighboring values are multiplied by $-1$ and a power of $4$, we do not need to worry about round-off errors
+	 from subtracting similar values.
+
+	
+	\chapter{Solving Non-Linear Equations}
+	
+	\noindent \textit{Previously:}\\
+	\underline{Bisection Method}:  We want to find zeros of a function, $f(x) = 0$.	We need an interval with a sign change:
+	
+	$$ f(a) \cdot f(b) < 0 $$
+	
+	\medskip
+	\noindent $f$ must be continuous (Intermediate Value Theorem)
+
+\begin{multicols}{2}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=3cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=8,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 1,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+  \addplot[red, only marks, mark=*] coordinates {(0,-1)(8,1)};
+ \node(a) at (axis cs: 4,-0.6){\large{$\frac{a+b}{2}$}};
+    \end{axis}
+\end{tikzpicture}
+
+	Compute function values of midpoint.
+	\columnbreak
+	
+	$$f\Big( \frac{a+b}{2} \Big) = 0 \Rightarrow \text{done}\quad \! \! \qquad$$
+	$$ f\Big( \frac{a+b}{2} \Big) > 0 \Rightarrow \text{keep going}$$
+	$$ f\Big( \frac{a+b}{2} \Big) < 0 \Rightarrow \text{keep going}$$
+\end{multicols}
+	
+	In the case that the midpoint value is greater than or less than zero, repeat the process with the sub-interval with the sign change, and
+	repeat until the required accuracy is reached.
+	
+\begin{center}
+	10 steps $\longrightarrow 2^{10} = 1024 \longrightarrow$ 3 digits
+\end{center}
+
+	Problems can occur in machine calculations, because of the gaps in the number system and because of roundoff errors in function evaluations.
+	When ``$f(x)=$ close to zero'', we do not know if this is a roundoff error or really a value different from zero.
+	
+\pagebreak
+
+\section{Newton's Method}
+\begin{multicols}{2}
+	\noindent $f(x)=0$\\
+
+	$f$ is differentiable\\
+
+	$x_0$ first guess
+
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,
+        xmax= 1.5,
+        ymin=-0.25,
+        ymax= 1.3,
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+        
+        \addplot[domain=0.15:8, blue, thick,samples=250] {(x+0.25)^2/2 -0.5}; % Parabola
+        \addplot[domain=0.7:1.65, red, thick,samples=250] {1.5*x-1.25}; % Tangent Line
+
+
+	\addplot[dashed,red,mark=none] coordinates{(1.25,0)(1.25,0.625)} node[below, pos=0] {$x_0$}; %x0
+	\addplot[red, only marks, mark=*] coordinates {(0.8333,0)(1.25,0.625)};
+		\node(x1)[red] at (axis cs: 0.9,-0.06){{$x_1$}};
+
+
+    \end{axis}
+\end{tikzpicture}
+
+
+\end{multicols}
+	
+	
 \end{document}	
 
 
