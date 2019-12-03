@@ -33,7 +33,7 @@
 
 \usetikzlibrary{arrows,angles}
 \pgfplotsset{compat=1.16,width=10cm}
-\usetikzlibrary{quotes,angles,positioning,decorations.pathreplacing}
+\usetikzlibrary{quotes,angles,positioning,decorations.pathreplacing, spy}
 
 \pagestyle{fancy}
 \makeindex
@@ -3960,10 +3960,14 @@ $
 \section{Newton's Method}
 \begin{multicols}{2}
 	\noindent $f(x)=0$\\
-
 	$f$ is differentiable\\
-
-	$x_0$ first guess
+	$x_0$ first guess\\
+	\\
+	\noindent Improved guess:
+	$$ y = f(x_0) + f^\prime (x_2) \cdot (x-x_0) $$\\
+	
+	\noindent Continue until the desired accuracy is reached. (Look for some digits in successive guesses), or until it becomes obvious that the
+	method fails.\\
 
 
 \begin{tikzpicture}
@@ -4000,10 +4004,198 @@ $
     \end{axis}
 \end{tikzpicture}
 
-
 \end{multicols}
 	
+	This method can go wrong.  Look at the function first!
 	
+\begin{multicols}{2}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=7cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 1.5,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax= 1.3,   % end   the diagram at this y-coordinate
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8, blue, thick,samples=250] {2*(x-0.75)^2 + 0.1}; % Parabola
+
+	\node(x1)[red] at (axis cs: 0.75,-0.2){{No Zeros!}};
+    \end{axis}
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=7cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 4,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 2,   % end   the diagram at this y-coordinate
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,blue, thick,samples=250] {0.2*((x-2.5)^3-(x-1.5)^2)+2}; % Parabola
+
+
+	\addplot[dashed,red,mark=none] coordinates{(3,0)(3,1.57)} node[below, pos=0] {$x_0$}; %x0
+	\addplot[red, only marks, mark=*] coordinates {(3,1.57)};
+		\node(x1)[red] at (axis cs: 2.5,-0.5){{Bad First Guess!}};
+
+
+    \end{axis}
+\end{tikzpicture}
+
+\end{multicols}	
+	
+\section{Solving Fixed Point Equations}
+
+	Another common type of equation is
+	$$x = g(x)$$
+	\noindent This is a fixed point equation.
+	$$0 = g(x) - x \;\; \text{\small{when}} \;\; x \neq 0  \quad \Rightarrow \quad 1 = \frac{g(x)}{x} \Rightarrow 0 = \frac{g(x)}{x}-1$$\\
+	
+	\noindent Reflecting on Newton's Method:
+	$$x_{n+1} =  x_n-\frac{f(x_n)}{f^\prime(x_n)} \quad \text{\small{when}} \quad \lim\limits_{n \to \infty}
+	x_* \quad \text{\small{then}} \quad \underbrace{ x_* = x_* - \frac{f(x_*)}{f^\prime (x_*)}}_{g(x_*)}$$\\
+	
+	
+	\pagebreak
+	\noindent \textbf{Example:} $x= \cos x$
+	
+\begin{center}	
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none,
+        width=12cm,
+        height=5.7cm,
+        grid style={dashed, gray!1},
+        xmin=-1.1,     % start the diagram at this x-coordinate
+        xmax= 4.3,    % end   the diagram at this x-coordinate
+        ymin=-1.25,     % start the diagram at this y-coordinate
+        ymax= 1.25,   % end   the diagram at this y-coordinate
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-1.57:4.71,blue, thick,samples=250] {cos(deg(x))};
+        \addplot[domain=-1:2, gray, thick,samples=250] {x};
+
+
+	\addplot[dashed,red,mark=none] coordinates{(0.7,0)(0.7,0.765)} node[below, pos=0] {$x_0$}; %x0
+	\addplot[red, only marks, mark=*] coordinates {(0.7,0.765)};
+	\node(x1)[blue] at (axis cs: 2.5,0.5){{$y = \cos x  $}};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	\noindent First guess: $x_0 = 0.7$. Apply Fixed Point Iteration:
+	$$ x_{n+1} \cos(x_n), \quad n = 0, 1, 2,...$$
+	$$ \cos (0.7) = 0.76484219... $$
+
+\begin{center}
+\begin{tikzpicture}[spy using outlines=
+	{circle, magnification=5, connect spies}]
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none,
+        width=12cm,
+        height=12cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 0.8,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 0.8,   % end   the diagram at this y-coordinate
+        xlabel=x,
+        ylabel=y,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-1.57:4.71,blue, thick,samples=250] {cos(deg(x))};
+        \addplot[domain=-1:2, gray, thick,samples=250] {x};
+
+
+%	\addplot[dashed,red,mark=none] coordinates{(0.7,0)(0.7,0.765)} node[below, pos=0] {$x_0$}; %x0
+	
+	\addplot[red, only marks, mark=*, mark size=1pt] coordinates {(0.7,0.765)(0.765,0.765)(0.765, 0.721)(0.721,0.721)(0.721,0.751)(0.751,0.751)(0.751,0.731)(0.731,0.731)(0.731,0.744)};
+	\node(cX)[blue] at (axis cs: 0.66,0.85){{$y = \cos x  $}};
+	\node(yX)[gray] at (axis cs: 0.3,0.2){{$y = x  $}};
+
+
+	\node[red] (y0) at (axis cs: 0.7,0){};
+	\node[red] (x0) at (axis cs: 0.7,0.765){};
+	\node[red] (y1) at (axis cs: 0.765,0.765){};
+	\node[red] (x1) at (axis cs: 0.765,0.721){};
+	\node[red] (y2) at (axis cs: 0.721,0.721){};
+	\node[red] (x2) at (axis cs: 0.721,0.751){};
+	\node[red] (y3) at (axis cs: 0.751,0.751){};
+	\node[red] (x3) at (axis cs: 0.751,0.735){};
+	
+	\node[red] (x_0) at (axis cs: 0.7, -0.02){$x_0$};
+	\node[red] (x_1) at (axis cs: 0.765, -0.02){$x_1$};
+	\addplot[dotted,gray,thick,mark=none] coordinates{(0.765,0)(0.765,0.721)} node[below, pos=0] {};
+		
+	\draw[red, dashed, ->](y0)--(axis cs: 0.7, 0.76);
+	\draw[red, dashed, ->](axis cs: 0.705,0.765)--(axis cs: 0.76, 0.765);
+	\draw[red, dashed, ->](axis cs: 0.765, 0.76)--(axis cs: 0.765, 0.726);
+	\draw[red, dashed, ->](axis cs: 0.76, 0.721)--(axis cs: 0.726, 0.721);
+	\draw[red, ->](axis cs: 0.721, 0.73)--(axis cs: 0.721, 0.746);
+	\draw[red, ->](axis cs: 0.727, 0.751)--(axis cs: 0.746, 0.751);
+	\draw[red, ->](axis cs: 0.751,0.746)--(axis cs: 0.751, 0.736);
+	\draw[red, ->](axis cs:0.745,0.731)--(axis cs: 0.736, 0.731);
+	\draw[red, ->](axis cs:0.731,0.731)--(axis cs: 0.731, 0.74);
+		
+	\coordinate (spypoint) at (axis cs:0.73,0.74);
+	\coordinate (magnifyglass) at (axis cs:1.05,0.35);
+	
+	\spy [gray, size=6cm] on (spypoint)
+   in node[fill=white] at (magnifyglass);
+    \end{axis}
+\end{tikzpicture}
+	$$ y_1 = \cos x_0 \qquad x_1 = y_1 \qquad y_2 = \cos x_1 \qquad x_2 = y_2 \qquad y_3 = \cos x_2 \qquad x_3 = y_3 $$
+\end{center}
+
+
 \end{document}	
 
 
