@@ -4101,7 +4101,7 @@ $
 	yticklabels=\empty
         grid = none,
         width=12cm,
-        height=5.7cm,
+        height=5.8cm,
         grid style={dashed, gray!1},
         xmin=-1.1,     % start the diagram at this x-coordinate
         xmax= 4.3,    % end   the diagram at this x-coordinate
@@ -4192,9 +4192,30 @@ $
    in node[fill=white] at (magnifyglass);
     \end{axis}
 \end{tikzpicture}
-	$$ y_1 = \cos x_0 \qquad x_1 = y_1 \qquad y_2 = \cos x_1 \qquad x_2 = y_2 \qquad y_3 = \cos x_2 \qquad x_3 = y_3 $$
-\end{center}
+	$$ y_1 = \cos x_0 \qquad x_1 = y_1 \qquad y_2 = \cos x_1 \qquad x_2 = y_2 \qquad y_3 = \cos x_2 \qquad x_3 = y_3 $$\\
+	\bigskip
+\fbox
+{
+	\parbox{0.6\textwidth}
+	{
+		\noindent \textit{\underline{Fixed Point Iteration}:}\\
+		\vspace{-3mm}
+		\\
+			To solve $x = g(x)$, try $x_0$ (first guess)
+			$$x_{n+1} = g(x_n), n = 0, 1, 2, ...$$
+			until the method converges or shows that it does not work.
+	}
+}
 
+\end{center}
+	\noindent \textit{When does it work?} In case it works, when is it fast or slow?
+	
+\begin{multicols}{2}
+
+
+
+\end{multicols}
+	
 
 \end{document}	
 
