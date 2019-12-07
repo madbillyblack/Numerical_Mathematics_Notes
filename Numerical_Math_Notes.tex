@@ -4056,8 +4056,8 @@ $
         xmax= 4,    % end   the diagram at this x-coordinate
         ymin=-1,     % start the diagram at this y-coordinate
         ymax= 2,   % end   the diagram at this y-coordinate
-        xlabel=x,
-        ylabel=y,
+        xlabel=$x$,
+        ylabel=$y$,
         enlargelimits=true,
         tension=0.08]
 
@@ -4211,11 +4211,235 @@ $
 	\noindent \textit{When does it work?} In case it works, when is it fast or slow?
 	
 \begin{multicols}{2}
+\begin{center}
+% [BEGIN CHART 1] -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 3,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 3,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,blue, thick,samples=250] {3*cos(deg(x/3-1.1))}; % Parabola
+         \addplot[domain=-0:8, gray, thick,samples=250] {x};
+
+	\node[red] (x0) at (axis cs: 1,-0.1){};
+	\node[red] (y0) at (axis cs: 1,2.16){};
+	\node[red] (x1) at (axis cs: 2.16,2.16){};
+	\node[red] (y1) at (axis cs: 2.16,2.786){};
+	\node[red] (x2) at (axis cs: 2.786,2.786){};
+	\node[red] (y2) at (axis cs: 2.786,2.956){};
+	\node[red] (x3) at (axis cs: 2.956,2.956){};
+	\node[red] (y3) at (axis cs: 2.956,2.98){};
+	\node[red] (xL) at (axis cs: 1,-0.2){$x_0$};
+
+	\draw[red, dashed, thick, ->](x0)--(y0);
+	\draw[red, dashed, thick, ->](y0)--(x1);
+	\draw[red, dashed, thick, ->](x1)--(y1);
+	\draw[red, dashed, thick, ->](y1)--(x2);
+	\draw[red, dashed, thick](x2.center)--(y2.center);
+	\draw[red, dashed, thick](y2.center)--(x3.center);
+	\draw[red, dashed, thick](x3.center)--(y3.center);
+
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(1,2.16)(2.16,2.16)(2.16,2.786)(2.786,2.786)(2.786,2.956)(2.956,2.956)};
+
+    \end{axis}
+\end{tikzpicture}
+
+	\noindent \textbf{Converging ``Staircase''}\\
+	\vspace{1cm}
+
+% ------------------------------------------------------------------------------------------------------------------------------------------------------------- [END CHART 1]
 
 
 
+% [BEGIN CHART 3] -------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 3,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 3,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,blue, thick,samples=250] {0.5*x^2-1}; % Parabola
+         \addplot[domain=-0:8, gray, thick,samples=250] {x};
+	
+	\node[red] (x0) at (axis cs: 2.5,-0.1){};
+	\node[red] (y0) at (axis cs: 2.5,2.125){};
+	\node[red] (x1) at (axis cs: 2.125,2.125){};
+	\node[red] (y1) at (axis cs: 2.125,1.258){};
+	\node[red] (x2) at (axis cs: 1.258,1.258){};
+	\node[red] (y2) at (axis cs: 1.258,-0.209){};
+	\node[red] (xL) at (axis cs: 2.5,-0.15){$x_0$};
+	
+	\draw[red, dashed, thick, ->](x0)--(y0);
+	\draw[red, dashed, thick, ->](y0)--(x1);
+	\draw[red, dashed, thick, ->](x1)--(y1);
+	\draw[red, dashed, thick, ->](y1)--(x2);
+	\draw[red, dashed, thick, ->](x2)--(y2);
+	
+	\addplot[red, only marks, mark=*, mark size=2pt] coordinates {(2.5,2.125)(2.125,2.125)(2.125,1.258)(1.258,1.258)(1.258,-0.209)};
+	
+    \end{axis}
+\end{tikzpicture}
+
+	\noindent \textbf{Diverging Staircase}\\
+% ------------------------------------------------------------------------------------------------------------------------------------------------------------- [END CHART 3]
+
+
+
+% [BEGIN CHART 2] -------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 3,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 3,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,blue, thick,samples=250] {3*cos(deg(x/3-1.45))}; % Parabola
+         \addplot[domain=-0:8, gray, thick,samples=250] {x};
+
+	\draw[red, dashed, thick, ->](axis cs: 1,0)--(axis cs:1,1.3);
+	\draw[red, dashed, thick, ->](axis cs: 1,1.316)--(axis cs: 1.3,1.316);	
+	\draw[red, dashed, thick, ->](axis cs: 1.316,1.316)--(axis cs: 1.316,1.55);
+	\draw[red, dashed, thick, ->](axis cs: 1.316,1.592)--(axis cs: 1.55,1.592);
+	\draw[red, dashed, thick, ->](axis cs: 1.592,1.592)--(axis cs: 1.592,1.8);
+	\draw[red, dashed, thick, ->](axis cs: 1.592,1.819)--(axis cs: 1.8,1.819);
+	\draw[red, dashed, thick, ->](axis cs: 1.819,1.819)--(axis cs: 1.819,1.96);
+
+	\addplot[dashed,red,thick,mark=none] coordinates{(1.819,1.994)(1.994,1.994)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(1.994,1.994)(1.994,2.12)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(1.994,2.12)(2.12,2.12)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(2.12,2.12)(2.12,2.21)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(2.12,2.21)(2.21,2.21)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(2.21,2.21)(2.21,2.268)} node[below, pos=0] {};
+	\addplot[dashed,red,thick,mark=none] coordinates{(2.21,2.268)(2.268,2.268)} node[below, pos=0] {};
+	
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(1,1.316)(1.316,1.316)(1.316,1.592)(1.592,1.592)(1.592,1.819)(1.819,1.819)(1.819,1.994)};
+	\addplot[red, only marks, mark=*, mark size=1pt] coordinates {(1.994,1.994)(1.994,2.12)(2.12,2.12)(2.12,2.21)(2.12,2.21)(2.21,2.21)(2.21,2.268)(2.268,2.268)};
+	
+	\node[red] (xL) at (axis cs: 1,-0.15){$x_0$};
+    \end{axis}
+\end{tikzpicture}
+
+	\noindent \textbf{Slow Converging Staircase}
+	\vspace{1cm}
+
+% ------------------------------------------------------------------------------------------------------------------------------------------------------------- [END CHART 2]
+
+
+
+
+% [BEGIN CHART 4]-------------------------------------------------------------------------------------------------------------------------------------------------------------
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 3.5,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 3.5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=0:3.5,blue, thick,samples=250] {4*cos(deg(x/2))+1}; % Parabola
+         \addplot[domain=-0:8, gray, thick,samples=250] {x};
+
+	
+	\node[red] (x0) at (axis cs: 2.5,0){};
+	\node[red] (y0) at (axis cs: 2.5,2.26){};
+	\node[red] (x1) at (axis cs: 2.26,2.26){};
+	\node[red] (y1) at (axis cs: 2.26,2.704){};
+	\node[red] (x2) at (axis cs: 2.704,2.704){};
+	\node[red] (y2) at (axis cs: 2.704,1.868){};
+	\node[red] (x3) at (axis cs: 1.868,1.868){};
+	\node[red] (y3) at (axis cs: 1.868,3.379){};
+	\node[red] (x4) at (axis cs: 3.379,3.379){};
+	\node[red] (y4) at (axis cs: 3.379,0.526){};
+	
+	\node[red] (xL) at (axis cs: 2.5,-0.2){$x_0$};
+	
+	\draw[red, dashed, thick, ->](x0)--(y0);
+	\draw[red, dashed, thick, ->](y0)--(x1);
+	\draw[red, dashed, thick, ->](x1)--(y1);
+	\draw[red, dashed, thick, ->](y1)--(x2);
+	\draw[red, dashed, thick, ->](x2)--(y2);
+	\draw[red, dashed, thick, ->](y2)--(x3);
+	\draw[red, dashed, thick, ->](x3)--(y3);
+	\draw[red, dashed, thick, ->](y3)--(x4);
+	\draw[red, dashed, thick, ->](x4)--(y4);	
+	
+	
+	\addplot[red, only marks, mark=*, mark size=2pt] coordinates {(2.5,2.26)(2.26,2.26)(2.26,2.704)(2.704,2.704)(2.704,1.868)(1.868,1.868)(1.868,3.379)(3.379,3.379)(3.379,0.526)};
+	
+    \end{axis}
+\end{tikzpicture}
+\noindent \textbf{Diverging Spiral}\\
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------------[END CHART 4]
+
+
+\end{center}
 \end{multicols}
 	
+
+
 
 \end{document}	
 

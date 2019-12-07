@@ -31,20 +31,28 @@
         \addplot[domain=-0:8,blue, thick,samples=250] {0.5*x^2-1}; % Parabola
          \addplot[domain=-0:8, gray, thick,samples=250] {x};
 
-
-%	\addplot[dashed,red,mark=none] coordinates{(1,0)(1,1.316)} node[below, pos=0] {$x_0$}; %x0
-%	\addplot[dashed,red,mark=none] coordinates{(1,1.316)(1.316,1.316)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.316,1.316)(1.316,1.592)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.316,1.592)(1.592,1.592)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.592,1.592)(1.592,1.819)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.592,1.819)(1.819,1.819)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.819,1.819)(1.819,1.994)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.994,1.994)(1.994,2.12)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(1.994,2.12)(2.12,2.12)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(2.12,2.12)(2.12,2.21)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(2.12,2.21)(2.21,2.21)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(2.21,2.21)(2.21,2.268)} node[below, pos=0] {};
-%	\addplot[dashed,red,mark=none] coordinates{(2.21,2.268)(2.268,2.268)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.5,0)(2.5,2.125)} node[below, pos=0] {$x_0$}; %x0
+%	\addplot[dashed,red,mark=none] coordinates{(2.5,2.125)(2.125,2.125)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.125,2.125)(2.125,1.258)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.125,1.258)(1.258,1.258)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(1.258,1.258)(1.258,-0.209)} node[below, pos=0] {};
+	
+	\node[red] (x0) at (axis cs: 2.5,-0.1){};
+	\node[red] (y0) at (axis cs: 2.5,2.125){};
+	\node[red] (x1) at (axis cs: 2.125,2.125){};
+	\node[red] (y1) at (axis cs: 2.125,1.258){};
+	\node[red] (x2) at (axis cs: 1.258,1.258){};
+	\node[red] (y2) at (axis cs: 1.258,-0.209){};
+	\node[red] (xL) at (axis cs: 2.5,-0.15){$x_0$};
+	
+	\draw[red, dashed, thick, ->](x0)--(y0);
+	\draw[red, dashed, thick, ->](y0)--(x1);
+	\draw[red, dashed, thick, ->](x1)--(y1);
+	\draw[red, dashed, thick, ->](y1)--(x2);
+	\draw[red, dashed, thick, ->](x2)--(y2);
+	
+	\addplot[red, only marks, mark=*, mark size=2pt] coordinates {(2.5,2.125)(2.125,2.125)(2.125,1.258)(1.258,1.258)(1.258,-0.209)};
+	
     \end{axis}
 \end{tikzpicture}
 \end{document}

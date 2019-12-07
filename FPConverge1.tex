@@ -32,13 +32,34 @@
          \addplot[domain=-0:8, gray, thick,samples=250] {x};
 
 
-	\addplot[dashed,red,mark=none] coordinates{(1,0)(1,2.16)} node[below, pos=0] {$x_0$}; %x0
-	\addplot[dashed,red,mark=none] coordinates{(1,2.16)(2.16,2.16)} node[below, pos=0] {};
-	\addplot[dashed,red,mark=none] coordinates{(2.16,2.16)(2.16,2.786)} node[below, pos=0] {};
-	\addplot[dashed,red,mark=none] coordinates{(2.16,2.786)(2.786,2.786)} node[below, pos=0] {};
-	\addplot[dashed,red,mark=none] coordinates{(2.786,2.786)(2.786,2.956)} node[below, pos=0] {};
-	\addplot[dashed,red,mark=none] coordinates{(2.786,2.956)(2.956,2.956)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(1,0)(1,2.16)} node[below, pos=0] {$x_0$}; %x0
+%	\addplot[dashed,red,mark=none] coordinates{(1,2.16)(2.16,2.16)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.16,2.16)(2.16,2.786)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.16,2.786)(2.786,2.786)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.786,2.786)(2.786,2.956)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.786,2.956)(2.956,2.956)} node[below, pos=0] {};
 %	\addplot[dashed,red,mark=none] coordinates{(2.956,2.956)(2.956,2.98)} node[below, pos=0] {};
+
+	\node[red] (x0) at (axis cs: 1,-0.1){};
+	\node[red] (y0) at (axis cs: 1,2.16){};
+	\node[red] (x1) at (axis cs: 2.16,2.16){};
+	\node[red] (y1) at (axis cs: 2.16,2.786){};
+	\node[red] (x2) at (axis cs: 2.786,2.786){};
+	\node[red] (y2) at (axis cs: 2.786,2.956){};
+	\node[red] (x3) at (axis cs: 2.956,2.956){};
+	\node[red] (y3) at (axis cs: 2.956,2.98){};
+	\node[red] (xL) at (axis cs: 1,-0.2){$x_0$};
+
+	\draw[red, dashed, thick, ->](x0)--(y0);
+	\draw[red, dashed, thick, ->](y0)--(x1);
+	\draw[red, dashed, thick, ->](x1)--(y1);
+	\draw[red, dashed, thick, ->](y1)--(x2);
+	\draw[red, dashed, thick](x2.center)--(y2.center);
+	\draw[red, dashed, thick](y2.center)--(x3.center);
+	\draw[red, dashed, thick](x3.center)--(y3.center);
+
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(1,2.16)(2.16,2.16)(2.16,2.786)(2.786,2.786)(2.786,2.956)(2.956,2.956)};
+
     \end{axis}
 \end{tikzpicture}
 \end{document}
