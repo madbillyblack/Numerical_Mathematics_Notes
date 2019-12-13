@@ -1,0 +1,48 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+   	xtick = {-4.712389, -3.14159, ..., 4.712389},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=14cm,
+        height=14cm,
+        grid style={dashed, gray!1},
+        xmin=-4.5,     % start the diagram at this x-coordinate
+        xmax= 4.5,    % end   the diagram at this x-coordinate
+        ymin=-4.5,     % start the diagram at this y-coordinate
+        ymax=4.5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+         \addplot[domain=-5:5, gray, thick,samples=250] {x};
+        \addplot[domain=-1.5:1.5,red, thick,samples=250] {tan(deg(x))};
+        \addplot[domain=1.6:4.6,red, thick,samples=250] {tan(deg(x-3.14159))};
+        \addplot[domain=-4.6:-1.6,red, thick,samples=250] {tan(deg(x+3.14159))};
+
+	\draw[red, dashed](axis cs: 1.5708, -6)--(axis cs: 1.5708, 6);
+	\draw[red, dashed](axis cs: -1.5708, -6)--(axis cs: -1.5708, 6);
+	\draw[red, dashed](axis cs: -4.7124, -6)--(axis cs: -4.7124, 6);
+	\draw[red, dashed](axis cs: 4.7124, -6)--(axis cs: 4.7124, 6);
+	
+	\node[red] (A1) at (axis cs: -1.85,-0.25){$- \frac{\pi}{2}$};
+	\node[red] (A2) at (axis cs: 1.4,-0.25){$\frac{\pi}{2}$};
+	\node[red] (A3) at (axis cs: -5,-0.25){$- \frac{3 \pi}{2}$};
+	\node[red] (A4) at (axis cs: 4.5,-0.25){$\frac{3 \pi}{2}$};
+    \end{axis}
+\end{tikzpicture}
+\end{document}

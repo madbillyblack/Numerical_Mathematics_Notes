@@ -4438,9 +4438,207 @@ $
 \end{center}
 \end{multicols}
 	
+\begin{center}
+	Slope between $ -1 < s < 1 \Rightarrow \text{convergent}$
+\end{center}
+	
+	\noindent If $g$ is differentiable, the fixed point iteration works when $ \lvert g^\prime \rvert <1 $ for all $x$ in that
+	 neighborhood and if the initial guess is also in that neighborhood.
+	
+\begin{center}
+	$g^\prime > 0 \Rightarrow$ ``Staircase''\\
+	\medskip
+	\hspace{-7.5mm} $g^\prime < 0 \Rightarrow$ ``Spiral''
+\end{center}
+
+	\noindent The closer  $ \lvert g^\prime \rvert$ is to 1, the slower the convergence. In the spiral case we can use averaging to
+	 accelerate the convergence.
+
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=7cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 2,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax= 2,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:2.5,blue, thick,samples=250] {log2(x+1.5)};
+        \addplot[domain=-0:2,red, thick,samples=250] {pow(2,x)-1.5};
+         \addplot[domain=-0:2, gray, thick,samples=250] {x};
+
+	\node[blue] (x0) at (axis cs: 1.1,1.7){$g^{-1}(x)=x$};
+    \end{axis}
+\end{tikzpicture}
+	\linebreak
+	Take the inverse function.
+\end{center}
+
+	\noindent\textbf{Example:} $x = \tan x$
+	
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+   	xtick = {-4.712389, -3.14159, ..., 4.712389},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=9cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-4.6,     % start the diagram at this x-coordinate
+        xmax= 4.6,    % end   the diagram at this x-coordinate
+        ymin=-4.6,     % start the diagram at this y-coordinate
+        ymax=4.6,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+         \addplot[domain=-5:5, gray, thick,samples=250] {x};
+        \addplot[domain=-1.5:1.5,red, thick,samples=250] {tan(deg(x))};
+        \addplot[domain=1.6:4.6,red, thick,samples=250] {tan(deg(x-3.14159))};
+        \addplot[domain=-4.6:-1.6,red, thick,samples=250] {tan(deg(x+3.14159))};
+
+	\draw[red, dashed](axis cs: 1.5708, -6)--(axis cs: 1.5708, 6);
+	\draw[red, dashed](axis cs: -1.5708, -6)--(axis cs: -1.5708, 6);
+	\draw[red, dashed](axis cs: -4.7124, -6)--(axis cs: -4.7124, 6);
+	\draw[red, dashed](axis cs: 4.7124, -6)--(axis cs: 4.7124, 6);
+	
+	\node[red] (A1) at (axis cs: -2,-0.5){$- \frac{\pi}{2}$};
+	\node[red] (A2) at (axis cs: 1.35,-0.5){$\frac{\pi}{2}$};
+	\node[red] (A3) at (axis cs: -5.2,-0.5){$\frac{-3 \pi}{2}$};
+	\node[red] (A4) at (axis cs: 4.4,-0.5){$\frac{3 \pi}{2}$};
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+	We have infinitely many solutions.  One of them is $x = 0$.  The further we get from 0, the closer the value will get to 
+	the vertical asymptotes.\\
+	
+	\noindent Let's find a solution close to $x = \frac{3 \pi}{2}$.  We need the inverse of the function to make fixed point iteration work.
+	
+\begin{multicols}{2}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	ytick = {-1.570796, 0, ..., 6.283185},
+	yticklabels=\empty,
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 5,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax=5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+         \addplot[domain=-5:6, gray, thick,samples=250] {x};
+        \addplot[domain=-5:6,blue, thick,samples=250] {rad(atan(x))};
+        \addplot[domain=-5:6,blue, thick,samples=250] {rad(atan(x))+3.14159};
+
+	\draw[blue, dashed](axis cs: -6,1.5708)--(axis cs: 6,1.5708);
+	\draw[blue, dashed](axis cs: -6,4.71239)--(axis cs: 0.7,4.71239);
+	\draw[blue, dashed](axis cs: 4.2,4.71239)--(axis cs: 6,4.71239);
+	\draw[red, thick, ->](axis cs: 4.7,1.5)--(axis cs: 4.7, 4.4);
+%	\draw[red, dashed](axis cs: -4.7124, -6)--(axis cs: -4.7124, 6);
+%	\draw[red, dashed](axis cs: 4.7124, -6)--(axis cs: 4.7124, 6);
+	
+	\node[red] (A1) at (axis cs: 5.1,3){$+\pi$};
+	\node[blue] (A2) at (axis cs: 2.5,4.8){$y = \tan^{-1} x + \pi$};
+	\node[blue] (A3) at (axis cs: -0.25,1.2){$\frac{\pi}{2}$};
+	\node[blue] (A4) at (axis cs: -0.25,4.3){$\frac{3 \pi}{2}$};
+    \end{axis}
+\end{tikzpicture}
+
+	\noindent This problem works extremely well with fixed point iteration since the slope is almost horizontal.
+
+	$$ 4.493 = \tan^{-1} 4.493 + \pi$$
+	
+	$\longrightarrow$ applying inverse function:
+	
+	$$ \tan(4.493... = \tan \big(\tan^{-1}(4.493)+\cancelto{\footnotesize{\pi- \text{periodic}}}{\pi} \big)$$
+	$$ = \tan \big( \tan^{-1} (4.493) \big)$$
+	\normalsize
+	\noindent No need to go back to the original problem.
+\end{multicols}
+
+	\noindent \textbf{Example:}
+	$$x^2 +y - 37 = 0$$
+	$$x - y^2-5 = 0$$
+	$$x+y+z-3=0$$
 
 
+	\noindent Only the third equation involves $z$, so use the first and second to solve $(x,y)$.  Then plug the solutions in
+	the corresponding z.
+
+	\noindent One possibility: We can plug $y = 37 - x^2$ into the second equation and solve
+	$$ x - (37 - x^2)^2 = 5 \longleftarrow \text{\footnotesize{(4th order equation)}}$$
+
+
+\begin{multicols}{2}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=9cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 10,    % end   the diagram at this x-coordinate
+        ymin=-2,     % start the diagram at this y-coordinate
+        ymax= 40,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,red, thick,samples=250] {37-x^2};
+         \addplot[domain=-0:10, blue, thick,samples=250] {sqrt(x-5)};
+         \addplot[domain=-0:10, blue, thick,samples=250] {-sqrt(x-5)};
+	\node[red] (x0) at (axis cs: 5,30){$y = 37-x^2$};
+	\node[blue] (y0) at (axis cs: 8,5){$y = \sqrt{x-5}$};
+
+	
+	\addplot[blue, only marks, mark=*, mark size=0.5pt] coordinates {(5,0)};
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(6,1)(6.17,-1.1)};
+	
+    \end{axis}
+\end{tikzpicture}
+\end{multicols}
 
 \end{document}	
-
 
