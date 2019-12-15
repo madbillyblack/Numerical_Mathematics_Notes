@@ -4327,7 +4327,7 @@ $
         axis y line=middle,
 	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
 	every axis y label/.style={at={(current axis.above origin)},anchor=east},
-	xticklabels=\empty,
+	xticklabels={\hspace{-5mm}5,\hspace{-5mm}6},
 	yticklabels=\empty
         grid = none ,
         width=8cm,
@@ -4590,20 +4590,20 @@ $
 	\noindent No need to go back to the original problem.
 \end{multicols}
 
-	\noindent \textbf{Example:}
+	\noindent \textbf{Example:}\\
 	$$x^2 +y - 37 = 0$$
 	$$x - y^2-5 = 0$$
-	$$x+y+z-3=0$$
+	$$x+y+z-3=0$$\\
 
 
 	\noindent Only the third equation involves $z$, so use the first and second to solve $(x,y)$.  Then plug the solutions in
 	the corresponding z.
 
-	\noindent One possibility: We can plug $y = 37 - x^2$ into the second equation and solve
-	$$ x - (37 - x^2)^2 = 5 \longleftarrow \text{\footnotesize{(4th order equation)}}$$
+	\noindent One possibility: We can plug $y = 37 - x^2$ into the second equation and solve\\
+	$$ x - (37 - x^2)^2 = 5 \longleftarrow \text{\footnotesize{(4th order equation)}}$$\\
 
 
-\begin{multicols}{2}
+\begin{center}
 \begin{tikzpicture}
     \begin{axis}[
         legend pos=south east,
@@ -4614,8 +4614,8 @@ $
 	xticklabels=\empty,
 	yticklabels=\empty
         grid = none ,
-        width=9cm,
-        height=9cm,
+        width=14cm,
+        height=14cm,
         grid style={dashed, gray!1},
         xmin=0,     % start the diagram at this x-coordinate
         xmax= 10,    % end   the diagram at this x-coordinate
@@ -4634,11 +4634,69 @@ $
 
 	
 	\addplot[blue, only marks, mark=*, mark size=0.5pt] coordinates {(5,0)};
-	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(6,1)(6.17,-1.1)};
-	
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(6,1)(6.17,-1.1)};	
     \end{axis}
 \end{tikzpicture}
-\end{multicols}
+
+\bigskip
+
+\begin{tikzpicture}[spy using outlines=
+	{circle, magnification=5, connect spies}]
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels={\hspace{-5mm}5,\hspace{-5mm}6},
+	yticklabels=\empty
+        grid = none ,
+        width=14cm,
+        height=14cm,
+        grid style={dashed, gray!1},
+        xmin=4.9,     % start the diagram at this x-coordinate
+        xmax= 7,    % end   the diagram at this x-coordinate
+        ymin=-1.5,     % start the diagram at this y-coordinate
+        ymax= 1.5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=4.9:8,gray, thick,samples=250] {37-x^2}; % Parabola
+        \addplot[domain=5:5.021, blue, thick,samples=250] {-6.9*(x-5};
+         \addplot[domain=0:10, blue, thick,samples=250] {-sqrt(x-5)};
+	
+	\node[gray] (x0) at (axis cs: 6.2,1.7){$y = 37-x^2$};
+	\node[blue] (y0) at (axis cs: 6.7,-1.1){$y = - \sqrt{x-5}$};	
+	\node (n5) at (axis cs:5,0.1){5};
+	\node (n6) at (axis cs:6,0.1){6};
+
+	
+	\draw[red, dashed, ->](axis cs:6,0)--(axis cs:6, -0.985);
+	\draw[red, dashed, ->](axis cs:6,-1)--(axis cs:6.155, -1);
+	\draw[red, dashed, ->](axis cs:6.165,-1.02)--(axis cs:6.165, -1.065);
+
+	\addplot[red, only marks, mark=*, mark size=1pt] coordinates {(6,-1)(6.165,-1)(6.165, -1.078)};
+	\addplot[gray, only marks, mark=*, mark size=1pt] coordinates {(6.17,-1.08)};	
+	
+	\coordinate (spypoint) at (axis cs:6.08,-1.05);
+	\coordinate (magnifyglass) at (axis cs:5.35,1);
+	
+	\spy [gray, size=6cm] on (spypoint) in node[fill=white] at (magnifyglass);
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+\bigskip
+	
+	\noindent Now, develop the method:
+	
+	$$ -1 = y_0 = 37 - x^2$$
+	
+	\noindent We need the positive solution.
+	$$ x^2 = 37-y_0 $$
+	
+	
 
 \end{document}	
 
