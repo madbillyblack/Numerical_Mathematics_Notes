@@ -1,0 +1,69 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none,
+        width=7.5cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 14,    % end   the diagram at this x-coordinate
+        ymin=-18,     % start the diagram at this y-coordinate
+        ymax= 0,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+	\node(O) at (axis cs: 0,0){};
+	\node(A1) at (axis cs: 1,0){};
+	\node(Ox) at (axis cs: 8.3,-5.5){};	
+	\node(B1) at (axis cs: 0, -18){};
+	\node(B2) at (axis cs: 5, -18){};
+	\node(L3) at (axis cs: -0.75, -3){-3};
+	\node(L10) at (axis cs: -1, -10){-10};
+	\node(L18) at (axis cs: -1, -18){-18};
+	%\node(F2)[blue] at (axis cs: -0.829, 0.559){100N};
+%	\node(F3)[red] at (axis cs: 0, -1.8){180N};
+
+	\addplot[gray, only marks, mark=*] coordinates {(8.3,-5.5)};
+%	\filldraw[color=red!60, fill=red!5, very thick](0,0) circle (20);	
+%	\draw (axis cs: 0,0) circle [color = blue,dashed,radius = 13.5ex];
+%
+	\draw[blue](O.center)--(Ox.center);
+	\draw[red](B1.center)--(Ox.center);
+	\draw[gray](B1.center)--(B2.center);
+%	\draw[blue, thick, ->](O.center)--(F2);
+%	\draw[red, thick, ->](O.center)--(F3);
+
+
+	\pic [draw, <-, gray, "$\alpha$", angle eccentricity=1.5] {angle = Ox--O--A1};
+	\pic [draw, ->, gray, "$\beta$", angle eccentricity=1.5] {angle = B2--B1--Ox};
+	\addplot[domain=0:11,blue, dashed,samples=250] {-sqrt(100-x^2)};
+	\addplot[domain=0:16,red, dashed,samples=250] {sqrt(225-x^2)-18};
+ %       \addplot[domain=-1:2, gray, thick,samples=250] {x};
+
+
+%	\addplot[dashed,red,mark=none] coordinates{(0,-3)(0,-10)} node[below, pos=0] {}; %x0
+%	\node(x1)[blue] at (axis cs: 2.5,0.5){{$y = \cos x  $}};
+    \end{axis}
+\end{tikzpicture}
+
+
+
+
+
+\end{document}

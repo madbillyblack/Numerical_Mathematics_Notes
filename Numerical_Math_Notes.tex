@@ -4696,7 +4696,328 @@ $
 	\noindent We need the positive solution.
 	$$ x^2 = 37-y_0 $$
 	
+	\bigskip
 	
+\begin{multicols}{3}
+\fbox
+{
+	\parbox{0.25\textwidth}
+	{
+	\begin{center}
+		$x_1 = \sqrt{37 - y_0}$\\
+		\medskip
+		\underline{Horizontal Step}
+	\end{center}
+	}
+}
+\begin{center}
+
+\bigskip
+
+	\noindent $\Rightarrow$ Plug In $\Rightarrow$
+	
+\end{center}	
+\fbox
+{
+	\parbox{0.25\textwidth}
+	{
+	\begin{center}
+		$y_1 = - \sqrt{x_1 - 5}$\\
+		\medskip
+		\underline{Vertical Step}
+	\end{center}
+	}
+}
+\end{multicols}
+
+%	\noindent Confirmed with Excel.  Method is very efficient. %DO WE HAVE THE FILE???
+
+\section{What we've learned:}
+
+\begin{itemize}
+\item Whenever possible, \textit{draw a picture}.
+\item When we draw a picture, look for simple moves from a known point, toward the solution.  In particular, vertical or horizontal moves.
+\item Find the corresponding function evaluations that accomplish these moves.
+\end{itemize}
+
+
+\chapter{Iterative Matrix Methods}
+\section{A familiar Statics problem:}	
+
+\noindent
+\begin{minipage}[c]{0.3\linewidth}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none,
+        width=5cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 1,    % end   the diagram at this x-coordinate
+        ymin=-2,     % start the diagram at this y-coordinate
+        ymax= 1.5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+	\node(O) at (axis cs: 0,0){};
+	\node(xO) at (axis cs: -1,0){};
+	\node(Ox) at (axis cs: 1,0){};	
+	\node(F1)[blue] at (axis cs: 0.817, 1.258){150N};
+	\node(F2)[blue] at (axis cs: -0.829, 0.559){100N};
+	\node(F3)[red] at (axis cs: 0, -1.8){180N};
+	
+	\draw[blue, thick, ->](O.center)--(F1);
+	\draw[blue, thick, ->](O.center)--(F2);
+	\draw[red, thick, ->](O.center)--(F3);
+
+
+	\pic [draw, <-, gray, "$\alpha$", angle eccentricity=1.5] {angle = F2--O--xO};
+	\pic [draw, ->, gray, "$\beta$", angle eccentricity=1.5] {angle = Ox--O--F1};	
+
+    \end{axis}
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[c]{0.6\linewidth}
+	\noindent What angles lead to equilibrium of the forces?\\
+	
+	\noindent \underline{Conditions of equilibrium}:\\ \\
+	\small
+	$100\,\,$
+	\hspace{-4mm}
+	$
+	\begin{pmatrix}
+		-\cos \alpha\\
+		\sin \alpha
+	\end{pmatrix}
+	$
+	\hspace{-4mm}
+	$\;\,+\,150\,\,$
+	\hspace{-4mm}
+	$
+	\begin{pmatrix}
+		\cos \beta\\
+		\sin \beta
+	\end{pmatrix}
+	$
+	\hspace{-4mm}
+	$\;\,+\, 180\,\,$
+	\hspace{-4mm}
+	$
+	\begin{pmatrix}
+		0\\
+		-1
+	\end{pmatrix}
+	$
+	$ =$
+	$
+	\begin{pmatrix}
+		0\\
+		0
+	\end{pmatrix}
+	$		
+	\\ \\ \\
+	\noindent \normalsize
+	When we reduce the coefficients we get:\\
+	\small
+	$$ -2 \cos \alpha + 3 \cos \beta = 0$$
+	$$10 \sin \alpha +15 \sin \beta - 18 = 0$$
+\end{minipage}
+	\\
+	\textit{Side Remark:} This problem can easily be solved with the Law of Cosines, but for our purposes, we need to explore other methods.
+	\\
+	\normalsize
+\begin{multicols}{2}	
+%\begin{minipage}[c]{0.4\linewidth}
+\begin{center}
+%	\large
+	\textbf{\underline{Graphical Solution}}\\
+%	\normalsize
+	(provides first guess)
+	\vspace{-1cm}
+\end{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none,
+        width=7.5cm,
+        height=9cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax= 14,    % end   the diagram at this x-coordinate
+        ymin=-18,     % start the diagram at this y-coordinate
+        ymax= 0,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+	\node(O) at (axis cs: 0,0){};
+	\node(A1) at (axis cs: 1,0){};
+	\node(Ox) at (axis cs: 8.3,-5.5){};	
+	\node(B1) at (axis cs: 0, -18){};
+	\node(B2) at (axis cs: 5, -18){};
+	\node(L3) at (axis cs: -0.75, -3){-3};
+	\node(L10) at (axis cs: -1, -10){-10};
+	\node(L18) at (axis cs: -1, -18){-18};
+	\addplot[gray, only marks, mark=*] coordinates {(8.3,-5.5)};
+%
+	\draw[blue](O.center)--(Ox.center);
+	\draw[red](B1.center)--(Ox.center);
+	\draw[gray](B1.center)--(B2.center);
+
+	\pic [draw, <-, gray, "$\alpha$", angle eccentricity=1.5] {angle = Ox--O--A1};
+	\pic [draw, ->, gray, "$\beta$", angle eccentricity=1.5] {angle = B2--B1--Ox};
+	\addplot[domain=0:11,blue, dashed,samples=250] {-sqrt(100-x^2)};
+	\addplot[domain=0:16,red, dashed,samples=250] {sqrt(225-x^2)-18};
+    \end{axis}
+\end{tikzpicture}
+%\end{minipage}
+%\begin{minipage}[c]{0.4\linewidth}
+
+	\underline{Structure of the problem}
+\begin{center}
+$
+  \left\{
+    \begin{array}{l}
+    	f_1(\alpha, \beta) = 0\\
+    	f_2(\alpha, \beta) = 0
+    \end{array}
+  \right.
+$
+\end{center}
+	or as a vector-valued function:
+	$$\vec{F}(\alpha,\beta) = \vec{0}$$
+	where
+	\begin{center}
+	$\vec{F}(\alpha, \beta) =
+	\begin{pmatrix}
+    	f_1(\alpha, \beta)\\
+    	f_2(\alpha, \beta)
+	\end{pmatrix}
+	$
+	\end{center}
+	
+%\end{minipage}
+\end{multicols}
+
+	\noindent This is an equation \textbf{$function = zero$} as used in connection with Newton's Method.\\
+	
+	\textbf{\underline{Newton's Method for one variable}:}
+	$$ x_{n+1} =  x_n - \frac{f(x)_n}{f\prime(x)_n} \qquad \qquad n = 0, 1, 2...$$
+	
+	\noindent starting from $x_0$ (for example, from a drawing)\\
+	
+	\textbf{\underline{Multidimensional}:}
+	\begin{center}
+	$
+	\begin{pmatrix}
+    	\alpha_{n+1}\\
+    	\beta_{n+1}
+	\end{pmatrix}
+	$
+	$=$
+	$
+	\begin{pmatrix}
+    	\alpha_n\\
+    	\beta_n
+	\end{pmatrix}	
+	$
+	$- \,(DF)^{-1}\!\!$
+	$
+	\begin{pmatrix}
+    	f_1(\alpha_n, \beta_n)\\
+    	f_2(\alpha_n, \beta_n)
+	\end{pmatrix}
+	$
+	\end{center}
+	\vspace{5mm}
+	\noindent What is the derivative of a vector-valued function, and what is its inverse?
+	The derivative of $f_1(\alpha, \beta)$ a function of two arguments is containe in its gradient.\\
+	
+	$$ \nabla f_1(\alpha,\beta) = \Big( \underbrace{\frac{\partial f_1}{\partial \alpha}(\alpha, \beta)\;
+	\frac{\partial f_1}{\partial \beta}(\alpha, \beta)}_{\text{Row Vector}}\Big)$$
+	
+	$$ \nabla f_2(\alpha,\beta) = \Big( \frac{\partial f_2}{\partial \alpha}(\alpha, \beta)\;
+	\frac{\partial f_2}{\partial \beta}(\alpha, \beta)\Big)$$
+
+
+	\noindent Combine these gradients in a matrix:
+	\large
+	\begin{center}
+	$\nabla \vec{F}(\alpha, \beta) =$
+	$
+	\begin{pmatrix}
+    	\frac{\partial f_1}{\partial \alpha}(\alpha, \beta)\;\; \frac{\partial f_1}{\partial \beta}(\alpha, \beta)\\ \\
+ 	\frac{\partial f_2}{\partial \alpha}(\alpha, \beta)\;\; \frac{\partial f_2}{\partial \beta}(\alpha, \beta)
+	\end{pmatrix}
+	$
+	\end{center}
+	\normalsize
+	\noindent This can also be denoted as $D\vec{F}$, the \textbf{Jacobian Matrix}.\\ \\
+	\underline{CAUTION}: Some people use ``Jacobian'' to denote this Matrix, otheres use it to denote the determinant
+	of this matrix.\\
+	
+	
+	\textbf{\underline{Newton's Method for several variables}:}
+	\begin{center}
+	$
+ 	 \left\{
+    	\begin{array}{l}
+    	f_1(\alpha_1,...,\alpha_n) = 0\\
+    	\vdots \\
+    	f_n(\alpha_n,...,\alpha_n) = 0
+   	\end{array}
+  	\right.
+	$
+\end{center}
+	
+	\noindent From a first guess $(\alpha_1^{(0)},...,\alpha_n^{(0)})$ compute \\
+	\begin{center}
+	$
+	\begin{pmatrix}
+	\alpha_1^{(k+1)}\\
+	\vdots \\
+	\alpha_n^{(k+1)}\\
+	\end{pmatrix}
+	$
+	$=$
+	$
+	\begin{pmatrix}
+	\alpha_1^{(k)}\\
+	\vdots \\
+	\alpha_n^{(k)}\\
+	\end{pmatrix}
+	$
+	$-$
+	$
+	\begin{pmatrix}
+	\frac{\partial f_1}{\partial \alpha_1}\; ... \; \frac{\partial f_1}{\partial \alpha_n}\\
+	\qquad \vdots \qquad \vdots \\
+	\frac{\partial f_n}{\partial \alpha_1}\; ... \; \frac{\partial f_n}{\partial \alpha_n}
+	\end{pmatrix}^{-1}
+	\begin{pmatrix}
+	f_1(\alpha_1^{(k)},...,\alpha_n^{(k)})\\
+	\vdots \qquad \vdots \\
+	f_n(\alpha_1^{(k)},...,\alpha_n^{(k)})\\
+	\end{pmatrix}
+	$	
+	\end{center}
+
 
 \end{document}	
 
