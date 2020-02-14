@@ -5015,9 +5015,351 @@ $
 	\vdots \qquad \vdots \\
 	f_n(\alpha_1^{(k)},...,\alpha_n^{(k)})\\
 	\end{pmatrix}
-	$	
+	$
 	\end{center}
 
+	\noindent The one-dimensional Newton's Method is often distinguished from higher dimensional which are themselves
+	referred to as \textit{Newton - Raphson Method}.\\ \\
+	
+	\noindent Instead of computing the inverse matrix, it is often easier to use the equation:
+	\begin{center}
+	$
+	\begin{pmatrix}
+	\frac{\partial f_1}{\partial \alpha_1}\; ... \; \frac{\partial f_1}{\partial \alpha_n}\\
+	\qquad \vdots \qquad \vdots \\
+	\frac{\partial f_n}{\partial \alpha_1}\; ... \; \frac{\partial f_n}{\partial \alpha_n}
+	\end{pmatrix}
+	\underbrace{
+	\begin{pmatrix}
+	\alpha_1^{(k+1)}\\
+	\vdots\\
+	\alpha_n^{(k+1)}\\
+	\end{pmatrix}
+	-
+	\begin{pmatrix}
+	\alpha_1^{(k+1)}\\
+	\vdots\\
+	\alpha_n^{(k+1)}
+	\end{pmatrix}
+	}_{
+	\begin{pmatrix}
+	\delta_1^{(k)}\\
+	\vdots \\
+	\delta_n^{(k)}
+	\end{pmatrix}
+	}
+	=\;\;-\!\!
+	\begin{pmatrix}
+	\frac{\partial f_1}{\partial \alpha_1}\; ... \; \frac{\partial f_1}{\partial \alpha_n}\\
+	\qquad \vdots \qquad \vdots \\
+	\frac{\partial f_n}{\partial \alpha_1}\; ... \; \frac{\partial f_n}{\partial \alpha_n}
+	\end{pmatrix}	
+	$
+	
+	\footnotesize{Solve for ``change'' using Gaussian Elimination or other method.}
+	\end{center}
+	
+	Then:
+	\begin{center}
+		$
+		\begin{pmatrix}
+		\alpha_1^{(k+1)}\\
+		\vdots\\
+		\alpha_n^{(k+1)}
+		\end{pmatrix}
+		=
+		\begin{pmatrix}
+		\alpha_1^{(k)}\\
+		\vdots\\
+		\alpha_n^{(k)}
+		\end{pmatrix}
+		+
+		\begin{pmatrix}
+		\delta_1^{(k)}\\
+		\vdots \\
+		\delta_n^{(k)}
+		\end{pmatrix}
+		$
+	\end{center}
+	
+	\noindent To reduce the computational cost of computing the Jacobian Matrix (and its inverse) in each step, one can use
+	the same matrix for two or three steps and then update it. \textit{This only makes sense when changes are small!}\\
+	
+	\noindent\textbf{Note:} A major advantage of Newton's Method and other iterative methods is that \textit{each step can be
+	 considered independent of all previous steps}  There's no accumulation of round-off errors.\\
+	 
+	 \noindent \textit{\underline{Idea}:} Gaussian Elimination can lead to accumulated round-off errors in the result. Use an
+	 \textit{iterative method} to improve the round-off errors, after having performed Gaussian Elimination.\\ \\
+	 
+	 \noindent \textbf{\underline{Our Example}}\\
+	 $$f_1(\alpha, \beta) = -2 \cos \alpha + 3 \cos \beta$$
+	 $$f_2(\alpha, \beta) = 10 \sin \alpha + 15 \sin \beta - 18$$
+	 $$\frac{\partial f_1}{\partial \alpha}= 2 \sin \alpha \qquad \qquad \frac{\partial f_1}{\partial \beta} = - \sin \beta$$
+	  $$\frac{\partial f_2}{\partial \alpha}=10 \cos \alpha \qquad \qquad \frac{\partial f_2}{\partial \beta} = 15 \cos \beta$$
+	  
+	  \begin{center}
+\bigskip
+
+\fbox
+{
+	\parbox{0.5\textwidth}
+	{
+		\textbf{\underline{Inverse of a $2\times 2$ matrix}:}
+		\begin{center}
+		$
+		\begin{pmatrix}
+			a \quad b \\
+			c \quad d			
+		\end{pmatrix}^{-1}
+		= \;
+		$
+		\Large
+		$
+		\frac{1}{ad-bc} \!\!
+		$
+		\normalsize
+		$
+		\begin{pmatrix}
+			d \quad -b \\
+			-c \quad a
+		\end{pmatrix}
+		$
+		\end{center}
+	}
+}
+\end{center}
+	
+	\noindent Hence:
+	\begin{center}
+	$
+	\begin{pmatrix}
+		2 \sin \alpha \quad -3 \sin \beta \\
+		10 \cos \alpha \quad 15 \cos \beta
+	\end{pmatrix}^{-1}
+	= \;
+	\underbrace{\frac{1}{30 \sin \alpha \cos \beta + 30 \sin \beta \cos \alpha}}_{= \; 30 \sin(\alpha + \beta)}
+	\begin{pmatrix}
+		15 \cos \beta \quad 3 \sin \beta \\
+		-10 \cos \alpha \quad 2 \sin \alpha
+	\end{pmatrix}
+	$
+	\end{center}
+	
+	\noindent Netwon's Method (right hand side):
+	\begin{center}
+	$
+	\begin{pmatrix}
+		\alpha \\
+		\beta
+	\end{pmatrix}
+	-
+	\frac{1}{30 \sin (\alpha + \beta)}
+	\begin{pmatrix}
+		15 \cos \beta \quad 3 \sin \beta \\
+		-10 \cos \alpha \quad 2 \sin \alpha
+	\end{pmatrix}
+	\begin{pmatrix}
+		-2 \cos \alpha + 3 \cos \beta \\
+		10 \sin \alpha  + 15 \sin \beta - 18
+	\end{pmatrix}
+	$
+	\\
+	\bigskip
+	$ =
+	\begin{pmatrix}
+		\alpha \\
+		\beta
+	\end{pmatrix}
+	-
+	\frac{1}{30 \sin (\alpha + \beta)}
+	\begin{pmatrix}
+		-30\cos \alpha \cos \beta + 45 \cos ^2 \beta + 30 \sin \alpha \sin \beta + 45 \sin^2 \beta - 54 \sin \beta \\
+		20 \cos ^2 \alpha - 30 \cos \alpha \cos \beta + 20 \sin ^2 \alpha + 30 \sin \alpha \sin \beta - 36 \sin \alpha
+	\end{pmatrix}
+	$
+	\\
+	\bigskip
+	$ =
+	\begin{pmatrix}
+		\alpha \\
+		\beta
+	\end{pmatrix}
+	-
+	\frac{1}{30 \sin (\alpha + \beta)}
+	\begin{pmatrix}
+		-30 \cos (\alpha + \beta) + 45 - 54 \sin \beta \\
+		20 - 30 \cos (\alpha + \beta) - 36 \sin \alpha
+	\end{pmatrix}
+	$
+	\end{center}
+	\begin{tabular}{r|c|c|c|c|c}
+	$n$ & $\alpha_n$ & $\beta_n$ & $\alpha_n + \beta_n$ &
+	$\frac{45 - 30\cos(\alpha_n+\beta_n) - 54\sin\beta_n}{30 \sin(\alpha_n+\beta_n)}$ &
+	$\frac{20 - 30\cos(\alpha_n+\beta_n) - 36\sin\alpha_n}{30 \sin(\alpha_n+\beta_n)}$\\
+	\hline
+	0 & 0.59 & 0.99 & 1.58 & 0.004356966321 & 0.00823733132 \\
+	1 & 0.5856430337 & 0.9817626687 & 1.567405702 & -0.00005088503697 & -0.000006399002949 \\
+	2 & 0.5856939187 & 0.9817690677 & 1.567462986 & 0 & -0.0000000008630320147 \\
+	3 & 0.5856939187 & 0.9817690685 & 1.567462987 & 0 & 0 \\
+	& $\Uparrow$ & $\Uparrow$ &&& \\
+	& subtract & subtract &&&
+	\end{tabular}
+	
+	\section{Example:}
+	\noindent Solve
+	\begin{center}
+	\begin{tabular}{rl}
+		\textbf{I.} & $x^2 + y - 37 = 0$\\
+		\textbf{II.} & $x-y^2 - 5 = 0$\\
+		\textbf{III.}& $x + y + z - 3 = 0$
+	\end{tabular}
+	\end{center}
+	
+	\noindent \underline{Equation \textbf{III}:} Determine $z$ if $x$ and $y$ are known.  Take equations \textbf{I} 
+	and \textbf{II} and solve with Newton's Method.\\
+	
+	\noindent \underline{Step 1}: Sketch all pairs $(x,y)$ that solve equations \textbf{I} and \textbf{II}.
+	
+	\begin{multicols}{2}
+		\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=8cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 10,    % end   the diagram at this x-coordinate
+        ymin=-2,     % start the diagram at this y-coordinate
+        ymax= 40,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,red, thick,samples=250] {37-x^2}; % Parabola
+         \addplot[domain=-0:10, blue, thick,samples=250] {sqrt(x-5)};
+         \addplot[domain=-0:10, blue, thick,samples=250] {-sqrt(x-5)};
+	
+	\node[red] (x0) at (axis cs: 8,30){$y = 37-x^2$};
+	\node[blue] (y0) at (axis cs: 8,25){$x=y^2 +5$};
+	\node[] (s1) at (axis cs: 6.9,4){$(6,1)$};
+
+	
+	\addplot[blue, only marks, mark=*, mark size=0.5pt] coordinates {(5,0)};
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(6,1)(6.17,-1.1)};
+    	\end{axis}
+	\end{tikzpicture}
+
+	\noindent Starting Point for second solution
+	$$(x_0, y_0) = (6, -1)$$
+	
+	\noindent One dimensional Newton:
+	$$x_{k+1}= x_k - \frac{f(x_k)}{f \prime (x_k)} $$
+	
+	\noindent Multidimensional Newton:
+	$$\vec{x}_{k+1} = \vec{x}_{k} - DF^{-1}\cdot F(\vec{x}_n)$$
+	\noindent Here:
+	$$ F(x,y) = (\underbrace{x^2+y-37}_{f_1(x,y)} \; \; ; \; \; \underbrace{x-y^2-5}_{f_2(x,y)})$$
+	\end{multicols}
+	\vspace{5mm}
+	\begin{center}
+		$DF(x,y) = 
+		\begin{pmatrix}
+			\text{grad} \, f_1\\
+			\text{grad} \, f_2
+		\end{pmatrix}
+		=
+		\begin{pmatrix}
+			2x \quad 1 \\
+			1 \quad -2y
+		\end{pmatrix}
+		$
+	\end{center}
+	
+	\noindent We need
+	\begin{center}
+	$ DF^{-1}\cdot F(x_0,y_0) =
+	\begin{pmatrix}
+		a_0\\
+		b_0
+	\end{pmatrix}
+	$
+	\end{center}
+	
+	\noindent In general, it is better to solve
+	\begin{center}
+		$ DF \cdot 
+		\begin{pmatrix}
+			a_0\\
+			b_0
+		\end{pmatrix}
+		= F(x_0,y_0)
+		$
+	\end{center}
+	
+	\noindent Here it is practical to use the inverse, because it's a $2 \times 2$ matrix.
+	\begin{center}
+	$DF^{-1} = \frac{1}{-4xy - 1} \!\!
+	\begin{pmatrix}
+		-2y \quad -1 \\
+		-1 \quad 2x
+	\end{pmatrix}
+	$
+	\end{center}
+
+	\noindent So
+	\begin{center}
+
+	$DF^{-1}\cdot F(x,y) = \; $\large$ \frac{1}{-4xy-1} \! $\normalsize$
+	\begin{pmatrix}
+		-2y \quad -1 \\
+		-1 \quad 2x	
+	\end{pmatrix}
+	\begin{pmatrix}
+		x^2 + y - 37\\
+		x- y^2 - 5
+	\end{pmatrix}
+	$
+
+	\vspace{5mm}
+
+	$ = \; $\large$ \frac{1}{-4xy-1} \! $\normalsize$
+	\begin{pmatrix}
+		-2y(x^2+y-37) - (x-y^2-5)\\
+		-(x^2+y-37) + 2x(x-y^2-5)
+	\end{pmatrix}
+	$
+	
+	\vspace{5mm}
+	
+	$ = \; $\large$ \frac{1}{-4xy-1} \! $\normalsize$
+	\begin{pmatrix}
+		-2x^2y - y^2 + 74y - x + y \\
+		x^2 - y + 37 - 2xy^2 - 10x
+	\end{pmatrix}
+	$
+	\end{center}
+
+	\vspace{5mm}
+
+	\noindent \underline{Step 1}: Iteration
+	\begin{center}
+	\begin{tabular}{r|c|c|c|c}
+		n & $x_n$ & $y_n$ & $\frac{-2x^2y-y^2+74y-x+5}{-4xy-1}$ & $\frac{x^2-y+37-2xy^2-10x}{-4xy-1}$\\
+		\hline
+		0 & 6 & -1 & -0.1739130435 & 0.08695652174 \\
+		1 & 6.173913043 & -1.086956522 & 0.002836852366 & -0.004783212958 \\
+		2 & 6.171076191 & -1.082173309 & 0.000001567210481 & -0.00001129501924 \\
+		3 & 6.171074624 & -1.082162014 & 0 & 0
+
+	\end{tabular}
+	\end{center}
 
 \end{document}	
-

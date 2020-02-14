@@ -1,0 +1,60 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=6cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax= 10,    % end   the diagram at this x-coordinate
+        ymin=-2,     % start the diagram at this y-coordinate
+        ymax= 40,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+        \addplot[domain=-0:8,red, thick,samples=250] {37-x^2}; % Parabola
+         \addplot[domain=-0:10, blue, thick,samples=250] {sqrt(x-5)};
+         \addplot[domain=-0:10, blue, thick,samples=250] {-sqrt(x-5)};
+
+%	\addplot[dashed,red,mark=none] coordinates{(2.5,0)(2.5,2.125)} node[below, pos=0] {$x_0$}; %x0
+%	\addplot[dashed,red,mark=none] coordinates{(2.5,2.125)(2.125,2.125)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.125,2.125)(2.125,1.258)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(2.125,1.258)(1.258,1.258)} node[below, pos=0] {};
+%	\addplot[dashed,red,mark=none] coordinates{(1.258,1.258)(1.258,-0.209)} node[below, pos=0] {};
+	
+	\node[red] (x0) at (axis cs: 6,30){$y = 37-x^2$};
+	\node[blue] (y0) at (axis cs: 8.5,5){$y = \sqrt{x-5}$};
+%	\node[red] (x1) at (axis cs: 2.125,2.125){};
+%	\node[red] (y1) at (axis cs: 2.125,1.258){};
+%	\node[red] (x2) at (axis cs: 1.258,1.258){};
+%	\node[red] (y2) at (axis cs: 1.258,-0.209){};
+%	\node[red] (xL) at (axis cs: 2.5,-0.15){$x_0$};
+	
+%	\draw[red, dashed, thick, ->](x0)--(y0);
+%	\draw[red, dashed, thick, ->](y0)--(x1);
+%	\draw[red, dashed, thick, ->](x1)--(y1);
+%	\draw[red, dashed, thick, ->](y1)--(x2);
+%	\draw[red, dashed, thick, ->](x2)--(y2);
+	
+	\addplot[blue, only marks, mark=*, mark size=0.5pt] coordinates {(5,0)};
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates {(6,1)(6.17,-1.1)};
+	
+    \end{axis}
+\end{tikzpicture}
+\end{document}
