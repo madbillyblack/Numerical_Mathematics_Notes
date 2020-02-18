@@ -4832,7 +4832,8 @@ $
 	$$10 \sin \alpha +15 \sin \beta - 18 = 0$$
 \end{minipage}
 	\\
-	\textit{Side Remark:} This problem can easily be solved with the Law of Cosines, but for our purposes, we need to explore other methods.
+	\textit{Side Remark:} This problem can easily be solved with the Law of Cosines, but for our purposes, we need to
+	 explore other methods.
 	\\
 	\normalsize
 \begin{multicols}{2}	
@@ -4918,7 +4919,7 @@ $
 	\noindent This is an equation \textbf{$function = zero$} as used in connection with Newton's Method.\\
 	
 	\textbf{\underline{Newton's Method for one variable}:}
-	$$ x_{n+1} =  x_n - \frac{f(x)_n}{f\prime(x)_n} \qquad \qquad n = 0, 1, 2...$$
+	$$ x_{n+1} =  x_n - \frac{f(x)_n}{f^\prime(x)_n} \qquad \qquad n = 0, 1, 2...$$
 	
 	\noindent starting from $x_0$ (for example, from a drawing)\\
 	
@@ -5190,20 +5191,28 @@ $
 		-30 \cos (\alpha + \beta) + 45 - 54 \sin \beta \\
 		20 - 30 \cos (\alpha + \beta) - 36 \sin \alpha
 	\end{pmatrix}
+	\vspace{1cm}
 	$
-	\end{center}
+
 	\begin{tabular}{r|c|c|c|c|c}
 	$n$ & $\alpha_n$ & $\beta_n$ & $\alpha_n + \beta_n$ &
 	$\frac{45 - 30\cos(\alpha_n+\beta_n) - 54\sin\beta_n}{30 \sin(\alpha_n+\beta_n)}$ &
 	$\frac{20 - 30\cos(\alpha_n+\beta_n) - 36\sin\alpha_n}{30 \sin(\alpha_n+\beta_n)}$\\
 	\hline
-	0 & 0.59 & 0.99 & 1.58 & 0.004356966321 & 0.00823733132 \\
-	1 & 0.5856430337 & 0.9817626687 & 1.567405702 & -0.00005088503697 & -0.000006399002949 \\
-	2 & 0.5856939187 & 0.9817690677 & 1.567462986 & 0 & -0.0000000008630320147 \\
-	3 & 0.5856939187 & 0.9817690685 & 1.567462987 & 0 & 0 \\
+	0 & \footnotesize 0.59 & \footnotesize 0.99 & \footnotesize 1.58 & \footnotesize 0.004356966321 &
+	\footnotesize 0.00823733132 \\
+	1 & \footnotesize 0.5856430337 & \footnotesize 0.9817626687 & \footnotesize 1.567405702 &
+	$ \footnotesize -5.088503697\times 10^{-5}$ & $ \footnotesize -6.399002949 \times 10^{-6}$ \\
+	2 & \footnotesize 0.5856939187 & \footnotesize 0.9817690677 &\footnotesize 1.567462986 & \footnotesize 0 &
+	$\footnotesize -8.630320147 \times 10^{-10}$ \\
+	3 & \footnotesize 0.5856939187 & \footnotesize 0.9817690685 & \footnotesize 1.567462987 & \footnotesize 0 &
+	 \footnotesize 0 \\
 	& $\Uparrow$ & $\Uparrow$ &&& \\
 	& subtract & subtract &&&
 	\end{tabular}
+	\end{center}
+	
+	\bigskip
 	
 	\section{Example:}
 	\noindent Solve
@@ -5261,7 +5270,7 @@ $
 	$$(x_0, y_0) = (6, -1)$$
 	
 	\noindent One dimensional Newton:
-	$$x_{k+1}= x_k - \frac{f(x_k)}{f \prime (x_k)} $$
+	$$x_{k+1}= x_k - \frac{f(x_k)}{f^\prime (x_k)} $$
 	
 	\noindent Multidimensional Newton:
 	$$\vec{x}_{k+1} = \vec{x}_{k} - DF^{-1}\cdot F(\vec{x}_n)$$
@@ -5349,17 +5358,99 @@ $
 
 	\vspace{5mm}
 
-	\noindent \underline{Step 1}: Iteration
+	\noindent \underline{Step 2}: Iteration
 	\begin{center}
+	\small
 	\begin{tabular}{r|c|c|c|c}
 		n & $x_n$ & $y_n$ & $\frac{-2x^2y-y^2+74y-x+5}{-4xy-1}$ & $\frac{x^2-y+37-2xy^2-10x}{-4xy-1}$\\
 		\hline
 		0 & 6 & -1 & -0.1739130435 & 0.08695652174 \\
 		1 & 6.173913043 & -1.086956522 & 0.002836852366 & -0.004783212958 \\
-		2 & 6.171076191 & -1.082173309 & 0.000001567210481 & -0.00001129501924 \\
+		2 & 6.171076191 & -1.082173309 & $1.567210481\times 10^{-6}$ & -$1.129501924 \times 10^{-5}$ \\
 		3 & 6.171074624 & -1.082162014 & 0 & 0
-
 	\end{tabular}
+	\normalsize
 	\end{center}
-
+	
+	\section{The Jacobian Matrix and the Chain Rule}
+	Some connections with the Chain Rule, a special case:
+	$$ z=f(x,y) \quad x = g(t) \quad y=(t) $$\\
+	Then:
+	$$z= f\big( g(t), \, h(t) \big)$$\\
+	with derivative:
+	
+	$$\dfrac{\mathrm{d}z}{\mathrm{d}t}=\dfrac{\mathrm{d}}{\mathrm{d}t} \Big( f\big( g(t), \, h(t) \big) \Big) 
+	= \frac{\partial f}{\partial x} \big( g(t), \, h(t) \big) \cdot \dfrac{\mathrm{d}}{\mathrm{d}t} g(t) +
+	\frac{\partial f}{\partial y}  \big( g(t), \, h(t) \big) \cdot \dfrac{\mathrm{d}}{\mathrm{d}t} h(t)$$\\
+	
+	\noindent with matrices:
+	$$ Df \big( \frac{\partial f}{\partial x}, \, \frac{\partial f}{\partial y} \big)
+	\qquad \Leftarrow\text{Gradient is a row vector!}$$
+	\begin{center}
+	$\hspace{-7mm} G(t) =
+	\begin{pmatrix}
+	g(t)\\
+	h(t)
+	\end{pmatrix}
+	\qquad \Leftarrow \text{vector valued function}
+	\linebreak
+	DG =
+	\begin{pmatrix}
+		g^\prime (t)\\
+		h^\prime (t)
+	\end{pmatrix}
+	\; \Leftarrow \text{component-wise differentiation}
+	$
+	$$ f \big( g(t), \, h(t) \big) =  \big( f \circ G \big)(t) \Leftarrow \text{composition of functions}$$
+	$ D\big( f \circ G \big) = Df \cdot DG = \big( \frac{\partial f}{\partial x}, \, \frac{\partial f}{\partial y} \big)\cdot
+	\begin{pmatrix}
+		g^\prime (t)\\
+		h^\prime (t)
+	\end{pmatrix}
+	= \frac{\partial f}{\partial x}\cdot g^\prime (t) + \frac{\partial f}{\partial y}\cdot h^\prime (t)
+	$
+	\end{center}
+	
+	\textbf{\underline{Generalized Chain Rule}:}
+	\begin{center}
+		$
+		\begin{pmatrix}
+			f_1(x_1,...,x_n)\\
+			\vdots \\
+			f_k(x_1,...,x_n)
+		\end{pmatrix}
+		=F(x_1,...,x_n)
+		\linebreak
+		\bigskip
+		G(y_1,...,y_r) =
+		\begin{pmatrix}
+			g_1(y_1,...,y_r) \\
+			\vdots \\
+			g_n(y_1,...,y_r)
+		\end{pmatrix}
+		$
+		\noindent Composition:
+		$
+		F \circ G(y_1,...,y_r) =
+		\begin{pmatrix}
+			f_1 \big( g_1(y_1,...,y_r) ... g_n(y_1,...,y_r) \big) \\
+			\vdots \\
+			f_k \big( g_1(y_1,...,y_r) ... g_n(y_1,...,y_r) \big)
+		\end{pmatrix}
+		$
+		\linebreak
+		\linebreak
+		\vspace{1cm}
+		$ D \big( F \circ G \big) =
+		\underbrace{
+		\begin{pmatrix}
+				\frac{\partial f_1}{\partial y_1}...\frac{\partial f_1}{\partial y_r} \\
+				\vdots \qquad \vdots \\
+				\frac{\partial f_k}{\partial y_1}...\frac{\partial f_k}{\partial y_r}	
+		\end{pmatrix}}_{k \times r}
+		$
+	\end{center}
+	
+	
+	
 \end{document}	
