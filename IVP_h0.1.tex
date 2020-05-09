@@ -1,0 +1,66 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=6cm,
+        height=12cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=1,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=1,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+   %     xtick={0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+        tension=0.08]
+
+
+         \addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+
+         \node (D1) at (axis cs: 0.1,0.5) {};
+         \node (D2) at (axis cs: 0.2,0.25) {};
+         \node (D3) at (axis cs: 0.3,0.125) {};
+         \node (D4) at (axis cs:0.4,0.0625) {};
+         \node (D5) at (axis cs:0.5,0.03125) {};
+         \node (D6) at (axis cs:0.6,0.015625) {};
+         \node (D7) at (axis cs:0.7,0.0078125) {};
+         \node (D8) at (axis cs:0.8,0.00390625) {};
+         \node (D9) at (axis cs:0.9,0.00195313) {};
+         \node (D10) at (axis cs:1,0.00097656) {};
+         \draw [thick,blue] (X0.center) to (D1.center);                    
+         \draw [thick,blue] (D1.center) to (D2.center);
+         \draw [thick,blue] (D2.center) to (D3.center);         
+         \draw [thick,blue] (D3.center) to (D4.center);
+         \draw [thick,blue] (D4.center) to (D5.center);
+         \draw [thick,blue] (D5.center) to (D6.center);         
+         \draw [thick,blue] (D6.center) to (D7.center);
+         \draw [thick,blue] (D7.center) to (D8.center);
+         \draw [thick,blue] (D8.center) to (D9.center);         
+         \draw [thick,blue] (D9.center) to (D10.center);
+         
+     %    \node (y0) at (axis cs: -0.1, 1000000){$10^6$}
+         \node (x1) at (axis cs: 1, -0.05){1};
+	\node (H) at (axis cs: 0.5, 1){$ h = 0.1 $};
+
+
+    \end{axis}
+\end{tikzpicture}
+\end{document}

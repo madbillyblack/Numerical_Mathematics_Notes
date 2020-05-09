@@ -5805,11 +5805,411 @@ $
     \end{axis}
 \end{tikzpicture}
 \end{center}
-
-	$$ k_1 = hf(t_n, y_n) $$
-	$$ k_2 = hf(t_n+\frac{h}{2}, y_n \frac{k_1}{2} $$
-	$$ k_3 = hf(t_n+\frac{h}{2}, y_n \frac{k_2}{2} $$
-	$$k_4 = hf(t_n +h, y_n +k_3)  $$
+	\vspace{-5mm}
+	$$ k_1 = hf(t_n, y_n) \qquad k_2 = hf(t_n+\frac{h}{2}, y_n \frac{k_1}{2})$$
+	 $$k_3 = hf(t_n+\frac{h}{2}, y_n \frac{k_2}{2} \qquad k_4 = hf(t_n +h, y_n +k_3)  $$
 	$$ y_{n+1} = y_n + \frac{1}{6}(k_1 + 2k_2 + 3k_3 + k_4) $$
+	
+	
+\section{Limitations of Single-Step Methods}
 
-\end{document}	
+	So far, we have seen so-called ``single-step methods'' to compute approximate solutions for differential equations
+	 using the information $ y^\prime = f(x,y) $ and $(x_n, y_n)$, these methods compute $(x_{n+1}, y_{n+1})$. There
+	  are some problems. \\
+	  
+\begin{multicols}{2}
+	  \textbf{Example:}
+	  $$ y^\prime = y^2 \qquad \qquad y(0) = 1 $$
+	  
+	  Use separation of variables to obtain the exact solution:
+	  $$ y(x) = \frac{-1}{x-1} = \frac{1}{1-x}$$
+	  
+	  There is a vertical asymptote at $x=1$.
+
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=5cm,
+        height=10cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=2,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=4,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+         \addplot[domain=-4:4, blue,samples=250] {-x-1};
+         \addplot[domain=-0.2:1, gray,samples=250, thick] {0.6*tan(deg(1.55*x))+1};
+         \addplot[dashed,gray,mark=none] coordinates{(1,-0.5)(1,5)} node[below, pos=0] {};
+         
+
+ 	 \addplot[domain=-1:1, blue, thick,samples=250] {x+1};
+ 	 \addplot[domain=1:2, blue, thick,samples=250] {4*x-2}; 
+
+	\addplot[domain=-0.2:0.2, red, thick]{0};
+	\addplot[domain=0.8:1.2, red, thick]{0};
+	\addplot[domain=1.8:2.2, red, thick]{0};
+	\addplot[domain=-0.15:0.15, red, thick]{x+1};
+	\addplot[domain=0.85:1.15, red, thick]{x};
+	\addplot[domain=1.85:2.15, red, thick]{x-1};
+
+	\addplot[domain=-0.05:0.05, red, thick]{4*x+2};
+	\addplot[domain=0.95:1.05, red, thick]{4*x-2};
+	\addplot[domain=1.95:2.05, red, thick]{4*x-6};
+	
+	\addplot[domain=-0.025:0.025, red, thick]{9*x+3};
+	\addplot[domain=0.975:1.025, red, thick]{9*x-6};
+	\addplot[domain=1.975:2.025, red, thick]{9*x-15};
+
+	\addplot[domain=-0.0125:0.0125, red, thick]{16*x+4};
+	\addplot[domain=0.9875:1.0125, red, thick]{16*x-12};
+	\addplot[domain=1.9875:2.0125, red, thick]{16*x-28};
+
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates{
+	(0,4)(1,4)(2,4)
+	(0,3)(1,3)(2,3)
+	(0,2)(1,2)(2,2)
+	(0,1)(1,1)(2,1)
+	(0,0)(1,0)(2,0)
+	};
+	\end{axis}
+\end{tikzpicture}
+\end{multicols}
+
+	\noindent \textit{\underline{Euler's Method}:} See picture.\\
+	Single-step methods cannot detect vertical asymptotes. Asymptotes are \textit{very} important in engineering.
+	We don't have a solution for this quite yet.\\ \\
+
+% STABILITY ANALYSIS ----------------------------------------------------------------------
+%--------------------------------------------------------------------------------------------
+\section{Stability Analysis}
+
+
+	\noindent \textbf{Example:} $\quad y^\prime = -5y \qquad y(0) = 1$ \\
+	Using forward Euler we get:
+
+\footnotesize	
+\begin{center}
+\begin{tabular}{r|cc|cc|cc|cc}
+	& $h = 1$ && $h = 0.5$ && $h = 0.25$ && $h = 0.1$ &\\
+	$n$ & $x_n$ & $y_n$ & $x_n$ & $y_n$ & $x_n$ & $y_n$ & $x_n$ & $y_n$\\
+	\hline
+	0&0&1&0&1&0&1&0&1\\
+	1&1& -4& 0.5&-1.5&0.25&-0.25&0.1&0.5\\
+	2&2& 16&1&2.25&0.5&0.0625&0.2&0.25\\
+	3&3&-64&1.5&-3.375&0.75&-0.015625&0.3&0.125\\
+	4&4&256&2&5.0625&1&0.00390625&0.4&0.0625\\
+	5&5&-1024&2.5&-7.59375&1.25&-0.0009766&0.5&0.03125\\
+	6&6&4096&3&11.390625&1.5&0.00024414&0.6&0.015625\\
+	7&7&-16384&3.5&-17.085938&1.75& $-6.1035\times 10^{-5} $&0.7&0.0078125\\
+	8&8&65536&4&25.6289063&2&$1.5259 \times 10^{-5}$&0.8&0.00390625\\
+	9&9&-262144&4.5&-38.443359&2.25&$-3.8147 \times 10^{-6}$&0.9&0.00195313\\
+	10&10&1048576&5&57.6650391&2.5&$9.5367 \times 10^{-7}$&1&0.00097656
+\end{tabular}
+\end{center}
+\normalsize
+
+\begin{multicols}{4}
+	
+	% H=1 Chart ------------------------------------------------------------------------------------------------------------------
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=5cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=10,    % end   the diagram at this x-coordinate
+        ymin=-450000,     % start the diagram at this y-coordinate
+        ymax=1150000,   % end   the diagram at this y-coordinate
+        xlabel=\empty,
+        ylabel=\empty,
+        enlargelimits=true,
+   %     xtick={0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+        tension=0.08]
+
+
+         %\addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+
+         \node (A1) at (axis cs: 1,-4) {};
+         \node (A2) at (axis cs: 2,16) {};
+         \node (A3) at (axis cs: 3,-64) {};
+         \node (A4) at (axis cs:4,256) {};
+         \node (A5) at (axis cs:5,-1024) {};
+         \node (A6) at (axis cs:6,4096) {};
+         \node (A7) at (axis cs:7,-16384) {};
+         \node (A8) at (axis cs:8,65536) {};
+         \node (A9) at (axis cs:9,-262144) {};
+         \node (A10) at (axis cs:10,1048576) {};
+         \draw [thick,red] (X0.center) to (A1.center);                    
+         \draw [thick,red] (A1.center) to (A2.center);
+         \draw [thick,red] (A2.center) to (A3.center);         
+         \draw [thick,red] (A3.center) to (A4.center);
+         \draw [thick,red] (A4.center) to (A5.center);
+         \draw [thick,red] (A5.center) to (A6.center);         
+         \draw [thick,red] (A6.center) to (A7.center);
+         \draw [thick,red] (A7.center) to (A8.center);
+         \draw [thick,red] (A8.center) to (A9.center);         
+         \draw [thick,red] (A9.center) to (A10.center);
+         
+     %    \node (y0) at (axis cs: -0.1, 1000000){$10^6$}
+         \node (x1) at (axis cs: 10, -100000){10};
+	\node (H) at (axis cs: 5, 1150000){$ h = 1 $};
+
+    \end{axis}
+\end{tikzpicture}
+
+
+
+% H=0.5 Chart ------------------------------------------------------------------------------------------------------------------
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=4.5cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=-1,     % start the diagram at this x-coordinate
+        xmax=5,    % end   the diagram at this x-coordinate
+        ymin=-25,     % start the diagram at this y-coordinate
+        ymax=100,   % end   the diagram at this y-coordinate
+        xlabel=\empty,
+        ylabel=\empty,
+        enlargelimits=true,
+   %     xtick={0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+        tension=0.08]
+
+
+         %\addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+
+         \node (B1) at (axis cs: 0.5,-1.5) {};
+         \node (B2) at (axis cs: 1,2.25) {};
+         \node (B3) at (axis cs: 1.5,-3.375) {};
+         \node (B4) at (axis cs:2,5.0625) {};
+         \node (B5) at (axis cs:2.5,-7.59375) {};
+         \node (B6) at (axis cs:3,11.390625) {};
+         \node (B7) at (axis cs:3.5,-17.085938) {};
+         \node (B8) at (axis cs:4,25.6289063) {};
+         \node (B9) at (axis cs:4.5,-38.443359) {};
+         \node (B10) at (axis cs:5,57.6650391) {};
+         \draw [thick,red] (X0.center) to (B1.center);                    
+         \draw [thick,red] (B1.center) to (B2.center);
+         \draw [thick,red] (B2.center) to (B3.center);         
+         \draw [thick,red] (B3.center) to (B4.center);
+         \draw [thick,red] (B4.center) to (B5.center);
+         \draw [thick,red] (B5.center) to (B6.center);         
+         \draw [thick,red] (B6.center) to (B7.center);
+         \draw [thick,red] (B7.center) to (B8.center);
+         \draw [thick,red] (B8.center) to (B9.center);         
+         \draw [thick,red] (B9.center) to (B10.center);
+         
+     %    \node (y0) at (axis cs: -0.1, 1000000){$10^6$}
+         \node (x1) at (axis cs: 5, -6){5};
+          \node (y1) at (axis cs: -1, 100){100};
+                  \node (H) at (axis cs: 3, 100){$ h = 0.5 $};
+         
+
+
+    \end{axis}
+\end{tikzpicture}
+
+
+
+% H=0.25 Chart ------------------------------------------------------------------------------------------------------------------
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=4.5cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=-0.5,     % start the diagram at this x-coordinate
+        xmax=2.5,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax=1,   % end   the diagram at this y-coordinate
+        xlabel=\empty,
+        ylabel=\empty,
+        enlargelimits=true,
+   %     xtick={0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+        tension=0.08]
+
+
+         %\addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+
+         \node (C1) at (axis cs: 0.25,-0.25) {};
+         \node (C2) at (axis cs: 0.5,0.0625) {};
+         \node (C3) at (axis cs: 0.75,-0.015625) {};
+         \node (C4) at (axis cs:1,0.00390625) {};
+         \node (C5) at (axis cs:1.25,-0.0009766) {};
+         \node (C6) at (axis cs:1.5,0.00024414) {};
+         \node (C7) at (axis cs:1.75,-0.000061035) {};
+         \node (C8) at (axis cs:2,0.000015259) {};
+         \node (C9) at (axis cs:2.25,-0.0000038147) {};
+         \node (C10) at (axis cs:2.5,0.00000095367) {};
+         \draw [thick,blue] (X0.center) to (C1.center);                    
+         \draw [thick,blue] (C1.center) to (C2.center);
+         \draw [thick,blue] (C2.center) to (C3.center);         
+         \draw [thick,blue] (C3.center) to (C4.center);
+         \draw [thick,blue] (C4.center) to (C5.center);
+         \draw [thick,blue] (C5.center) to (C6.center);         
+         \draw [thick,blue] (C6.center) to (C7.center);
+         \draw [thick,blue] (C7.center) to (C8.center);
+         \draw [thick,blue] (C8.center) to (C9.center);         
+         \draw [thick,blue] (C9.center) to (C10.center);
+         
+         
+     %    \node (y0) at (axis cs: -0.1, 1000000){$10^6$}
+         \node (x1) at (axis cs: 2, -0.1){2};
+         \node (y1) at (axis cs: -0.2, 1){1};
+         \node (H) at (axis cs: 1.7, 1){$ h = 0.25 $};
+
+
+    \end{axis}
+\end{tikzpicture}
+
+
+
+% H=0.1 Chart ------------------------------------------------------------------------------------------------------------------
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=4.5cm,
+        height=8cm,
+        grid style={dashed, gray!1},
+        xmin=-0.2,     % start the diagram at this x-coordinate
+        xmax=1,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax=1,   % end   the diagram at this y-coordinate
+        xlabel=\empty,
+        ylabel=\empty,
+        enlargelimits=true,
+   %     xtick={0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1},
+        tension=0.08]
+
+
+         %\addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+
+         \node (D1) at (axis cs: 0.1,0.5) {};
+         \node (D2) at (axis cs: 0.2,0.25) {};
+         \node (D3) at (axis cs: 0.3,0.125) {};
+         \node (D4) at (axis cs:0.4,0.0625) {};
+         \node (D5) at (axis cs:0.5,0.03125) {};
+         \node (D6) at (axis cs:0.6,0.015625) {};
+         \node (D7) at (axis cs:0.7,0.0078125) {};
+         \node (D8) at (axis cs:0.8,0.00390625) {};
+         \node (D9) at (axis cs:0.9,0.00195313) {};
+         \node (D10) at (axis cs:1,0.00097656) {};
+         \draw [thick,blue] (X0.center) to (D1.center);                    
+         \draw [thick,blue] (D1.center) to (D2.center);
+         \draw [thick,blue] (D2.center) to (D3.center);         
+         \draw [thick,blue] (D3.center) to (D4.center);
+         \draw [thick,blue] (D4.center) to (D5.center);
+         \draw [thick,blue] (D5.center) to (D6.center);         
+         \draw [thick,blue] (D6.center) to (D7.center);
+         \draw [thick,blue] (D7.center) to (D8.center);
+         \draw [thick,blue] (D8.center) to (D9.center);         
+         \draw [thick,blue] (D9.center) to (D10.center);
+         
+     %    \node (y0) at (axis cs: -0.1, 1000000){$10^6$}
+         \node (x1) at (axis cs: 1, -0.1){1};
+         \node (y1) at (axis cs: -0.1, 1){1};
+	\node (H) at (axis cs: 0.75, 1){$ h = 0.1 $};
+
+
+    \end{axis}
+\end{tikzpicture}
+	
+	
+% End of Charts -------------------------------------------------------------------------------------------------------------	
+\end{multicols}	
+	\noindent \underline{Exact Solution:} $\quad y(x) = C \cdot e^{-5x} \qquad y(x) = e^{-5x}$ for IVP.\\
+	
+	\noindent We observe that the shape of the numerical solution using Euler's method varies extremely depending on
+	the step size.
+	\begin{list}{}
+		\item $h = 1$: oscillating behavior with fast increasing amplitude. (error becomes infinitely large)
+		\item $h = 0.5$: Same only slower increase
+		\item $h = 0.25$: Still oscillating, but decreasing amplitude. (Error stays bounded)
+		\item $h = 0.1$: Same shape as the actual solution.
+	\end{list}
+	
+	
+	It is possible that the true solution is ``stable'' (i.e. bounded from above and below) but the numerical solution is
+	 ``unstable'' (i.e. unbounded).  Then the error gets arbitrarily large.
+	 
+	 \begin{center}
+	 \fbox
+	{
+		\parbox{0.8\textwidth}{
+		Euler's method is conditionally stable: i.e. the numerical solution is stable for sufficiently small step sizes but
+		 may be unstable for larger step sizes.}
+	}
+	\end{center}
+	
+	How can we determine a suitable step size?
+
+	 
+	 
+
+% END-------------------------------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------------------------------------
+\end{document}
+
+% TODO:
+% --------------------------
+% Go Back and Add Secant Rule (Chapter 5?)
+
+
