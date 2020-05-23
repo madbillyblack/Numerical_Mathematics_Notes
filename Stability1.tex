@@ -5,6 +5,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usetikzlibrary{patterns}
+
 \usetikzlibrary{calc,patterns,angles,quotes}
 
 \newcommand{\R}{\mathbb{R}}
@@ -32,9 +34,10 @@
         enlargelimits=true,
         tension=0.08]
 
-	\draw [fill=blue, opacity=0.25] (axis cs: -2,2) rectangle (axis cs: 0, -2);
-	\node (S1) at (axis cs: -0.65,0.35) {Stability Region};
-	\node (S2) at (axis cs: -0.65,0.25) {for Exact Solution};
+	\draw [fill=blue, opacity = 0.25] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	\draw [pattern=north west lines, pattern color=gray] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	\node (S1)  at (axis cs: -0.65,0.35) {Stability Region};
+	\node (S2) at (axis cs: -0.65,0.25) {for Implicit Euler};
 
     \end{axis}
 \end{tikzpicture}

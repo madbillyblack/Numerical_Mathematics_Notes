@@ -36,7 +36,7 @@
 \usetikzlibrary{arrows,angles}
 \pgfplotsset{compat=1.16,width=10cm}
 \usetikzlibrary{quotes,angles,positioning,decorations.pathreplacing, spy}
-
+\usetikzlibrary{patterns}
 \pagestyle{fancy}
 \makeindex
 
@@ -6373,8 +6373,223 @@ $
 	
 	Note that for $\lambda = ib$ (purely imaginary parameter) we cannot find any step size for which Euler's
 	Method is stable.  For Real$(\lambda) a < 0$, we can find sufficiently small step-size for Euler's Method to
-	remain stable. A step-size $h=0$ doesn't make sense, though.
+	remain stable. A step-size $h=0$ doesn't make sense, though.\\ \\
+	
+	Other methods have other stability regions.  Let's consider Euler's Method from another perspective:
+	
+	$$ y_{n+1} = y_n + h \cdot f(x_n, y_n)$$ \\
+	$$\Rightarrow \underbrace{\frac{y_{n+1} - y_n}{h}}_{\text{Forward Difference}} = f(x_n, y_n) $$ \\
+	
+	\noindent Compare with:
+	$$ y^\prime = f(x,y)$$\\
+	
+	Here the derivative is replaced by the \textbf{forward difference formula}:
+	
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	xticklabels=\empty,
+	yticklabels= \empty,
+        grid = none ,
+        width=7cm,
+        height=6cm,
+        grid style={dashed, gray!1},
+        xmin=1,     % start the diagram at this x-coordinate
+        xmax= 7,    % end   the diagram at this x-coordinate
+        ymin=-1,     % start the diagram at this y-coordinate
+        ymax= 5,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
 
+  	\addplot[red, only marks, mark=*] coordinates {(2,2)(6,4)};
+  	\draw [red, <->] (axis cs:2,1) -- (axis cs: 6,1);
+  	\draw [red,dashed] (axis cs: 2,-0.15) -- (axis cs: 2,2);
+  	\draw [red,dashed] (axis cs: 6,-0.15) -- (axis cs: 6,4);
+  	\draw[blue,thick](axis cs: 2,2)--(axis cs: 6,4);
+      
+	\node(c1) at (axis cs: 1.25, 2.5){$(x_n, y_n)$};
+	\node(c2) at (axis cs: 6, 4.5){$(x_{n+1}, y_{n+1})$};
+	\node(s1) [blue] at (axis cs: 3.5, 3.5){$f(x_n, y_n)$};
+	\node(s2) [blue] at (axis cs: 3.1, 4.125){slope};
+	\node(x1)[red] at (axis cs: 2,-0.5){$x_n$};
+	\node(x2)[red] at (axis cs: 6,-0.5){$x_{n+1}$};
+	\node(H) [red] at (axis cs: 4, 1.25){$h$};
+
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	\noindent Let's use the backward difference instead:
+	
+	$$ \frac{y_{n+1} - y_n}{h} = \underbrace{f(x_{n+1}, y_{n+1})}_{\text{The change is here.}}$$
+	
+	$$ \Rightarrow \underbrace{y_{n+1} = 
+	y_n + hf(x_{n+1}, y_{n+1})}_{\text{Implicit equation for unknown}\, y_{n+1}}$$ \\
+	
+	This is referred to as the \textbf{Implicit Euler} or \textbf{Backward Euler} method.  Conversely,
+	the method that we've previously studied is referred to as the \textit{Explicit Euler} or 
+	\textit{Forward Euler} method.\\
+	
+	The Implicit Euler step is an equation in fixed point form.  We can apply fixed point iteration to solve it.  
+	For sufficiently small step size h, the necessary condition for fixed point iteration is satisfied. Use Explicit 
+	Euler to obtain a first guess.  If it deviates a lot from the result of Implicit Euler, use a smaller step size.\\
+	
+	\noindent \textbf{Example:}
+	$$ y^ \prime = \sin y \qquad \qquad y(0) = 1 $$
+	
+	
+	% /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	%
+	%				GET EXCEL EXAMPLE!!!!!
+	%
+	%//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	\section{Stability Analysis for Implicit Euler}
+	The example shows that each step requires significantly more work. So what's the advantage?\\
+	
+	\textbf{Model Problem:}
+	$$ y^\prime = \lambda \cdot y \qquad \qquad \lambda = a + ib$$
+	
+	The exact solution is stable when $a \leq 0$.  Apply Implicit Euler:
+	
+	$$ y_n+1 = y_n + h \cdot f(x_{n+1}, y_{n+1}) = y_n + h \cdot \lambda \cdot y_{n+1}$$\\
+	$$\Rightarrow y_{n+1} - h \cdot \lambda \cdot y_{n+1} = y_n$$\\
+	$$\Rightarrow y_{n+1} \big( 1 - h \lambda \big) = y_n$$\\
+	$$\Rightarrow y_{n+1} =\!\!\!\!\!\!\! 
+	\underbrace{\frac{1}{1 - h \lambda}}_{\text{Amplification factor}} \!\!\!\!\!\!\!\!y_n $$\\
+	
+	For stability:
+	
+	$$\vert \frac{1}{1-h \lambda} \vert \leq 1 $$\\
+	$$\Rightarrow 1 \leq \vert 1 - h \lambda \vert $$\\
+	$$\Rightarrow 1 \leq \vert 1 - h \cdot a - i \cdot h \cdot b \vert  $$\\
+	$$\Rightarrow 1 \leq \underbrace{\sqrt{ \big( 1 - ha \big)^2 + \big( hb \big)^2}}_{
+	> 1 \,\, \text{when} \,\, \lambda \neq 0}   $$
+	
+\begin{center}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=10cm,
+        height=10cm,
+        grid style={dashed, gray!1},
+        xmin=-1,
+        xmax=1,
+        ymin=-1,
+        ymax=1,
+        xlabel=$\R$,
+        ylabel=$i \R$,
+        enlargelimits=true,
+        tension=0.08]
+
+	\draw [fill=blue, opacity = 0.25] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	\draw [pattern=north west lines, pattern color=gray] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	\node (S1)  at (axis cs: -0.65,0.35) {Stability Region};
+	\node (S2) at (axis cs: -0.65,0.25) {for Implicit Euler};
+
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+	The extra computational effort affords us nice stability behavior.\\
+	
+	\noindent \textbf{Example:} (revisited)
+	$$ y^\prime = -5y \qquad \qquad y(0) = 1 $$
+	
+	% INSERT PLOT
+	
+	Implicit Euler: $h = 1$
+	$$ y_1 = y_0 + h \cdot f(x_1, y_1) $$\\
+	$$\Rightarrow y_1 = 1 + 1 \cdot (-5) y_1 $$\\
+	$$\Rightarrow 6y_1 = 1 \Rightarrow y_1 = \frac{1}{6} $$\\ \\
+	
+	$$ y_2 = y_1 + h \cdot f(x_2, y_2)$$\\
+	$$ \Rightarrow y_2 = \frac{1}{6} + 1(-5)y_2 $$\\
+	$$ \Rightarrow 6y_2 = \frac{1}{6} $$\\
+	$$ \Rightarrow y_2 = \frac{1}{36} $$ \\
+	
+	Even a larger step-size works: $\qquad h= 2$
+	
+	$$ y_1 = y_0 + 2 (-5)y_1$$\\
+	$$ \Rightarrow 11 y_1 = 1$$\\
+	$$ \Rightarrow y_1 = \frac{1}{11}$$\\
+	
+	This step size isn't very accurate, but is ultimately still stable.\\
+
+\begin{center}
+	\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=14cm,
+        height=7cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=2.5,    % end   the diagram at this x-coordinate
+        ymin=-0.25,     % start the diagram at this y-coordinate
+        ymax=1,   % end   the diagram at this y-coordinate
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+
+         \addplot[domain=-0.2:2.1625, gray,samples=250, thick] {exp(-5*x)};
+         
+         %  Step Size h = 1
+         \node (X0) at (axis cs: 0,1) {};
+         \node (A1) at (axis cs: 1,1/6) {};
+         \node (A2) at (axis cs: 2, 1/36){};
+         \node (A3) at (axis cs: 3, 1/216){};
+         \draw [thick,blue] (X0.center) to (A1.center);
+         \draw [thick,blue] (A1.center) to (A2.center);
+         \draw [thick,blue] (A2.center) to (A3.center);
+         \node (AL)[blue] at (axis cs: 1.15,0.25) {$h = 1$};
+         
+	%  Step Size h = 2
+         \node (B1) at (axis cs: 2,1/11) {};
+         \node (B2) at (axis cs: 4,1/121) {};
+         \draw [thick,red] (X0.center) to (B1.center);
+         \draw [thick,red] (B1.center) to (B2.center);
+         \node (BL)[red] at (axis cs: 1.5,0.5) {$h = 2$};
+         
+         \node(E)[darkgray] at (axis cs: 0.5, 0.25){$y = e^{-5x}$};
+         
+          \addplot[red, only marks, mark=*] coordinates {(2,1/11)};
+          \addplot[blue, only marks, mark=*] coordinates {(1,1/6)(2,1/36)};
+         
+
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+	
+	\noindent \textit{Observation:}\\
+	Explicit Euler always uses the same slope regardless of the step-size.  Implicit Euler adjusts the slope to 
+	the step-size because the slope depends on the final point.
+	
+	
+	
+	
 % END-------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------------------------------------------------------------------
