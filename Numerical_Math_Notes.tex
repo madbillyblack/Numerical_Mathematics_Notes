@@ -6588,6 +6588,270 @@ $
 	the step-size because the slope depends on the final point.
 	
 	
+
+
+\chapter{Numerical Solutions to Differential Equations}
+
+	\noindent \textbf{Example:}
+
+\begin{center}
+	\center{\includegraphics[width=0.8\linewidth]{Car.jpg}}
+	%\caption{Car Motion Diagram}\label{fig: Point Mass Car}
+\end{center}
+
+	\noindent \textit{\underline{Point Mass}:}\\
+	$x(t)$ position of particle at time $t$.\\
+	
+	\noindent \textit{\underline{Restoring Force}:}\\
+	Here visualized by a spring.
+	
+\begin{multicols}{2}
+\begin{center}
+	\fbox{
+		\parbox{0.4\textwidth}{
+		\begin{center}
+			\textbf{Hooke's Law:}
+			$$F_s = -k \cdot x $$
+			$ k > 0 $ Spring Constant
+		\end{center}
+			}
+		}
+
+	\fbox{
+		\parbox{0.4\textwidth}{
+		\begin{center}
+			\textbf{Newton's Law:}
+			$$F = m \cdot a = m \ddot{x} $$
+		\end{center}
+		}
+	}
+\end{center}
+\end{multicols}
+
+	\vspace{1cm}
+	\noindent Thus:
+	
+\begin{center}
+		\fbox{
+		\parbox{0.4\textwidth}{
+		\begin{center}
+			\textbf{Equation of Motion:}
+			$$ m \ddot{x} = -kx $$
+			$$ \Rightarrow m \ddot{x} + kx = 0 $$
+		\end{center}
+		}
+}	
+\end{center}
+
+	\noindent Second-order Linear Differential Equation with constant coefficient, homogeneous. Choose units so that $m =1, \; k = 1$
+	
+	$$ \Rightarrow \ddot{x} + x = 0$$
+	
+	Initial conditions:
+	
+	$$ x(0) = 1 \qquad \qquad \dot{x}(0) = 0 $$
+	
+	Exact solution:
+	
+	$$ x(t) = \cos(t) \qquad \text{\footnotesize{(Review Applied Math)}}$$
+	
+	
+	So far, our numerical methods considered a first-order ODE:
+	$$ y^ \prime f(x,y)$$
+	
+	How do we adapt them to the second-order setting?\\
+	
+	Introduce the first derivative of the wanted function as a new component function:
+	\begin{center}
+	\begin{tabular}{r c c c  l}
+		$v$ & $=$ & $\dot{x}$ &&\\
+		$\dot{v}$ & $ = $ & $\ddot{x}$ & $= $& $-x$
+	\end{tabular}
+	\end{center}
+	
+	We obtain a system of first-order ordinary differential equations:\\
+	
+	\begin{center}
+	$	
+  	\left\{
+  	\begin{array}{l}
+		 \dot{x} = v \\
+		\dot{v} = -x
+	\end{array}
+  	\right.
+	$\\
+	
+	\bigskip
+	
+	
+	$\dfrac{\mathrm{d}}{\mathrm{d}t}
+  	\begin{pmatrix}
+		x\\
+		v
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+	\; 0 \; \; 1 \\
+	-1 \; \; 0
+	\end{pmatrix}
+	\begin{pmatrix}
+		x \\
+		v
+	\end{pmatrix}
+	$
+	\end{center}
+	
+	This particular system is even linear. (Matrix-vector Product)
+	
+	Compare:
+	\begin{center}
+		\begin{tabular}{r c l}
+			$y \prime$ & $=$ & $f(x,y)$\\
+			$y_{n+1}$ & $=$ & $y_n + h \cdot f(x_n, y_n)$
+		\end{tabular}\\
+		\medskip
+		Step size: $h$\\
+		\medskip
+		\end{center}
+		
+		Just use one computation step for each component of the system.
+		
+		\begin{center}
+
+	
+	\fbox{
+		\parbox{0.4\textwidth}{
+		\begin{center}
+			\textbf{Explicit Euler:}
+			$$t_{n+1} = t_n + h $$
+			$$ x_{n+1} = x_n + h \cdot v_n$$
+			$$ v_{n+1} = v_n + h \cdot (-x_n) $$
+		\end{center}
+		}
+	}
+	
+	
+	$$ \frac{x_{n+1} - x_n}{h} = v_n \qquad \qquad \frac{v_{n+1} - v_n}{h} = -x_n$$
+	\end{center}
+	
+	\section{Energy Example}
+	\noindent \textbf{Some Physics:}
+	$$ \text{total energy} = \text{potential energy} + \text{kinetic energy}$$
+	$$= \frac{1}{2}kx^2 + \frac{1}{2}mv^2 $$
+	
+	\noindent With our units:
+	$$ 2 \cdot \text{energy} = x^2 + v^2$$
+	
+	\noindent This quantity is constant in our example.\\
+	
+	\textit{Exact solution:}
+	$$ x^2 + v^2 = \cos^2 t + \sin^2 t = 1$$
+	
+	Yes, constant energy.\\ \\
+	
+	\noindent \textit{Numerical Solution:}
+	$$ x_{n+1}\! \,^2 + v_{n+1}\! \,^2$$
+	$$ = (x_n + hv_n)^2 + (v_n - hx_n)^2 $$
+	$$ = x_n\! \,^2 + \cancel{2hx_nv_n} + h^2v_n\! \,^2 + v_n\! \,^2 -\cancel{2hx_nv_n} +h^2x_n\! \,^2 $$
+	$$ = (1+h^2)x_n \! \,^2 +   (1+h^2)v_n \! \,^2 $$
+	$$ (1 + h^2)(x_n \! \, ^2 + v_n \! \, ^2) $$
+	
+	\noindent ``Energy'' is increasing.  The numerical method is unstable in this case. To avoid an increase of the energy,
+	try implicit Euler.  Yes it is stable, but the energy will decrease for implicit Euler and tend to 0.\\
+	
+	\noindent \textit{There are more advanced methods that ``keep'' the energy at a better level.  Sadly, we won't be covering them here.}\\
+	
+	\noindent \textbf{Example:}\\
+	Some motion in the $xy$ plane is described by:
+	\begin{center}
+		$\dfrac{\mathrm{d}}{\mathrm{d}t}
+  		\begin{pmatrix}
+			x(t)\\
+			y(t)
+		\end{pmatrix}
+			=
+		\begin{pmatrix}
+			\;-50 \; \; 49 \\
+			49 \; \;-50
+			\end{pmatrix}
+		\begin{pmatrix}
+			x(t) \\
+			v(t)
+		\end{pmatrix}
+		$
+	\end{center}
+	With initial conditions:
+	\begin{center}
+	$
+		\begin{pmatrix}
+			x(0)\\
+			y(0)
+		\end{pmatrix}
+			=
+		\begin{pmatrix}
+			2 \\
+			0
+		\end{pmatrix}
+		$
+	\end{center}
+	
+	
+	\noindent How do we solve such a system exactly?\\
+	
+	\noindent \textbf{1.)} Compute the eigenvalues of the matrix:\\
+	\begin{center}
+	$\text{det}
+	\begin{pmatrix}
+		-50 - \lambda \quad 49 \\
+		49 \qquad -50 - \lambda
+	\end{pmatrix}
+	= 0
+	$
+	\end{center}
+	$$\Rightarrow (-50 - \lambda)^2 - 49^2 = 0 $$
+	$$\Rightarrow \lambda ^2 + 100 \lambda + 50^2 - 49^2 = 0 $$
+	$$\Rightarrow \lambda ^ 2 + 100 \lambda + (50-49)(50+49) = 0 $$
+	$$\Rightarrow \lambda ^2 + 100 \lambda + 99  = 0$$
+	
+	\noindent Quadratic Formula / or Simpler
+	$$ (\lambda + 99)(\lambda +1) = 0 $$
+	
+	\noindent Eigenvalues are $\lambda_1 = 1$ and $ \lambda_2 = -99 $\\ \\
+	
+	\noindent \textbf{2.)} Compute Eigenvectors:
+	\begin{center}
+		$\lambda = -1 $ \\
+		\bigskip
+		\begin{tabular}{c c | c}
+		$x$ & $y$ & r.h.s. \\
+		\hline
+		-49 & 49 & 0\\
+		49 & -49 & 0 \\
+		\hline
+		-49 & 49 & 0\\
+		0 & 0 & 0
+		\end{tabular}
+		
+		\bigskip
+		\bigskip
+		
+		
+		% CONTINUE WITH LAMBDA = -99 EXAMPLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		$\lambda = -99$
+	\end{center}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 % END-------------------------------------------------------------------------------------------------------------------------------------
