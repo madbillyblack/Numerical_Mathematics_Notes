@@ -1,0 +1,37 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=4cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=5,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=1.05,   % end   the diagram at this y-coordinate
+        xlabel=$t$,
+        ylabel=\empty,
+        enlargelimits=true,
+        tension=0.08]
+
+
+         \addplot[domain=0:5, red,samples=250, thick] {exp(-99*x)};
+         \node(E)[red] at (axis cs: 0.5, 0.25){$e^{-99t}$};
+   
+    \end{axis}
+\end{tikzpicture}
+\end{document}

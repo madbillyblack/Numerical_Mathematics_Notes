@@ -6496,8 +6496,8 @@ $
         enlargelimits=true,
         tension=0.08]
 
-	\draw [fill=blue, opacity = 0.25] (axis cs: -2,2) rectangle (axis cs: 0, -2);
-	\draw [pattern=north west lines, pattern color=gray] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	\draw [fill=green, opacity = 0.25] (axis cs: -2,2) rectangle (axis cs: 0, -2);
+	%\draw [pattern=north west lines, pattern color=gray] (axis cs: -2,2) rectangle (axis cs: 0, -2);
 	\node (S1)  at (axis cs: -0.65,0.35) {Stability Region};
 	\node (S2) at (axis cs: -0.65,0.25) {for Implicit Euler};
 
@@ -6802,8 +6802,8 @@ $
 	\begin{center}
 	$\text{det}
 	\begin{pmatrix}
-		-50 - \lambda \quad 49 \\
-		49 \qquad -50 - \lambda
+		\! \! -50 - \lambda \qquad 49 \\
+		\quad 49 \qquad -50 - \lambda
 	\end{pmatrix}
 	= 0
 	$
@@ -6822,14 +6822,14 @@ $
 	\begin{center}
 		$\lambda = -1 $ \\
 		\bigskip
-		\begin{tabular}{c c | c}
+		\begin{tabular}{c c | c l}
 		$x$ & $y$ & r.h.s. \\
 		\hline
-		-49 & 49 & 0\\
-		49 & -49 & 0 \\
+		-49 & 49 & 0 &\\
+		49 & -49 & 0 & $I + II$\\
 		\hline
-		-49 & 49 & 0\\
-		0 & 0 & 0
+		-49 & 49 & 0&\\
+		0 & 0 & 0 &
 		\end{tabular}
 		
 		\bigskip
@@ -6838,21 +6838,289 @@ $
 		
 		% CONTINUE WITH LAMBDA = -99 EXAMPLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		
-		$\lambda = -99$
+		$\lambda = -99$\\
+		\bigskip
+		\begin{tabular}{c c | c l}
+		$x$ & $y$ & r.h.s. \\
+		\hline
+		49 & 49 & 0 &\\
+		49 & 49 & 0 & $I - II$\\
+		\hline
+		-49 & 49 & 0&\\
+		0 & 0 & 0 &
+		\end{tabular}
+	\end{center}
+	
+	\bigskip
+	\bigskip
+	
+	Eigenvectors are of the form:
+	
+	\begin{center}
+		$
+		\begin{pmatrix}
+			x\\
+			y
+		\end{pmatrix}
+			= s \cdot
+		\begin{pmatrix}
+			1 \\
+			-1
+		\end{pmatrix}
+		\qquad \qquad s \neq 0
+		$
+	\end{center}
+	
+	\bigskip
+	\bigskip
+	
+	\noindent \textbf{3.)} A general solution of the system is given by:\\
+		\begin{center}
+		$
+		\begin{pmatrix}
+			x(t)\\
+			y(t)
+		\end{pmatrix}
+			= C_1 \cdot
+		\begin{pmatrix}
+			1 \\
+			1
+		\end{pmatrix}
+			\cdot e^{-1t} + C_2 \cdot
+		\begin{pmatrix}
+			1 \\
+			-1
+		\end{pmatrix}
+			\cdot e^{-99t}
+		$\\
+		\medskip
+		For numbers $C_1$, $C_2$
+	\end{center}
+	
+	\bigskip
+	\bigskip
+	
+	\textit{Check:}
+	
+		\begin{center}
+		\medskip
+		\textbf{LHS: }$ \quad
+		\begin{pmatrix}
+			\dot{x}(t)\\
+			\dot{y}(t)
+		\end{pmatrix}
+			= C_1 \!
+		\begin{pmatrix}
+			1 \\
+			1
+		\end{pmatrix}
+			\! (-1) e^{-t} + C_2 \!
+		\begin{pmatrix}
+			1 \\
+			-1
+		\end{pmatrix}
+			\! (-99) e^{-99t}
+		$\\
+		\bigskip
+
+		\textbf{RHS: }$ \quad
+		\begin{pmatrix}
+			-50 \quad 49\\
+			49 \quad -50
+		\end{pmatrix}
+		\begin{pmatrix}
+			x(t) \\
+			y(t)
+		\end{pmatrix}
+		= C_1 \!
+		\begin{pmatrix}
+			1 \\
+			1
+		\end{pmatrix}
+			\! \!\!\! \underbrace{(-1)}_{\text{eigenvalue}} \!\!\!  e^{-t} + C_2 \!
+		\begin{pmatrix}
+			1 \\
+			-1
+		\end{pmatrix}
+			\! (-99) e^{-99t}
+		$
+
 	\end{center}
 	
 	
 	
+	\noindent \textbf{4.)} Determine the constants for the Initial Value problem:
+	\medskip
+	\begin{center}
+	$
+	\begin{pmatrix}
+		2\\
+		0
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		x(0)\\
+		y(0)
+	\end{pmatrix}
+	= C_1
+	\begin{pmatrix}
+		1\\
+		1
+	\end{pmatrix}
+		\cdot 1 + C_2
+	\begin{pmatrix}
+		1\\
+		-1
+	\end{pmatrix}
+	\cdot 1$\\
+		\bigskip
+		
 	
+	$	\Rightarrow \quad
+  	\begin{array}{l}
+		2 = C_1 + C_2\\
+		0 = C_1 - C_2
+	\end{array}
+	$
+	$\quad \Rightarrow \quad$
+	$
+	\begin{array}{l}
+		C_1 = 1\\
+		C_2 = 1
+	\end{array}
+	$ \\
+	\bigskip
+	\bigskip
+	\fbox
+	{
+		\parbox{0.5\textwidth}
+		{
+			\textbf{\underline{Solution to IVP}:}
+			\begin{center}
+			$
+				\begin{pmatrix}
+					x(t)\\
+					y(t)
+				\end{pmatrix}
+				=
+				\begin{pmatrix}
+					e^{-t} + e^{-99t}\\
+					e^{-t} - e^{-99t}
+				\end{pmatrix}	
+			$
+			\end{center}
+		}
+	}\\
+	\end{center}
+	\bigskip
+	\begin{multicols}{2}
 	
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=4cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=4,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=1.05,   % end   the diagram at this y-coordinate
+        xlabel=$t$,
+        ylabel=\empty,
+        enlargelimits=true,
+        tension=0.08]
+
+
+         \addplot[domain=0:5, blue,samples=250, thick] {exp(-x)};
+         \node(E)[blue] at (axis cs: 0.5, 0.25){$e^{-t}$};
+   
+    \end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels=\empty,
+	yticklabels=\empty
+        grid = none ,
+        width=7cm,
+        height=4cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=4,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=1.05,   % end   the diagram at this y-coordinate
+        xlabel=$t$,
+        ylabel=\empty,
+        enlargelimits=true,
+        tension=0.08]
+
+
+         \addplot[domain=0:5, red,samples=250, thick] {exp(-99*x)};
+         \node(E)[red] at (axis cs: 0.5, 0.25){$e^{-99t}$};
+   
+    \end{axis}
+\end{tikzpicture}
+	\end{multicols}
 	
+	\section{Partial Differential Equations}
 	
+	\noindent{\textbf{Example:}} Heat conduction (similar diffusion)\\
+	%Three dimensional objects, battery in an electric car:
+	\begin{center}
+	\begin{figure}[!htb]
+	\center{\includegraphics[width=0.8\linewidth]{CarBattery.png}}
+
+	\caption{Three dimensional objects: Battery in an electric car.}\label{fig:Car Battery}
+	\end{figure}
+	\end{center}
 	
+	Temperature $T(x,y,z,t)$ is a scalar quantity.
 	
+	\pagebreak
 	
+	\begin{center}
+	\begin{figure}[!htb]
+	\center{\includegraphics[width=0.8\linewidth]{Thermals.png}}
+
+	\caption{Cross section for some $z$ and some $t$.}\label{fig:Thermals}
+	\end{figure}
+	\end{center}
 	
+	Heat flows from hotter regions to colder ones.
 	
+	\begin{center}
+	\fbox
+	{
+		\parbox{0.7\textwidth}
+		{
+			\textbf{\underline{Fourier's Law of heat conduction}:}\\
+			\begin{center}
+ 				Heat Flow $\; = - \kappa \cdot A \cdot \nabla T $\\
+			\end{center}
+			$A$: Separating Area\\
+			$ \kappa$: material constant (thermal conductivity)
+		}
+	}
+	\end{center}
 	
+	\begin{center}
+	\begin{figure}[!htb]
+	\center{\includegraphics[width=0.8\linewidth]{HeatFlow.png}}
+	%\caption{Cross section for some $z$ and some $t$.}\label{fig:Heat Flow}
+	\end{figure}
+	\end{center}
 	
 % END-------------------------------------------------------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------------------------------------------------------------------
