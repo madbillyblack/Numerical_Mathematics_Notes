@@ -1,0 +1,74 @@
+\documentclass[varwidth=true, border=2pt]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{calc,patterns,angles,quotes}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        legend pos=south east,
+        axis x line=middle,
+        axis y line=middle,
+	every axis x label/.style={at={(current axis.right of origin)},anchor=north},
+	every axis y label/.style={at={(current axis.above origin)},anchor=east},
+	xticklabels={1,2,3,4},
+	yticklabels={,$\pi$,,$2\pi$},
+        grid = none ,
+        width=10cm,
+        height=10cm,
+        grid style={dashed, gray!1},
+        xmin=0,     % start the diagram at this x-coordinate
+        xmax=4,    % end   the diagram at this x-coordinate
+        ymin=0,     % start the diagram at this y-coordinate
+        ymax=7,   % end   the diagram at this y-coordinate
+        xtick = {1,2,3,4},
+        ytick={pi/2, pi, pi*3/2, 2*pi},
+        xlabel=$x$,
+        ylabel=$y$,
+        enlargelimits=true,
+        tension=0.08]
+
+	\addplot[domain=-0.25:0.25, red, thick]{0};
+	\addplot[domain=0.75:1.25, red, thick]{0};
+	\addplot[domain=1.75:2.25, red, thick]{0};
+	\addplot[domain=2.75:3.25, red, thick]{0};
+	\addplot[domain=3.75:4.25, red, thick]{0};
+	
+	\addplot[domain=-0.25:0.25, red, thick]{pi};
+	\addplot[domain=0.75:1.25, red, thick]{pi};
+	\addplot[domain=1.75:2.25, red, thick]{pi};
+	\addplot[domain=2.75:3.25, red, thick]{pi};
+	\addplot[domain=3.75:4.25, red, thick]{pi};
+	
+	\addplot[domain=-0.25:0.25, red, thick]{2*pi};
+	\addplot[domain=0.75:1.25, red, thick]{2*pi};
+	\addplot[domain=1.75:2.25, red, thick]{2*pi};
+	\addplot[domain=2.75:3.25, red, thick]{2*pi};
+	\addplot[domain=3.75:4.25, red, thick]{2*pi};
+	
+	\addplot[domain=-0.2:0.2, red, thick]{x+pi/2};
+	\addplot[domain=0.8:1.2, red, thick]{x + (pi/2 -1)};
+	\addplot[domain=1.8:2.2, red, thick]{x + (pi/2 -2)};
+	\addplot[domain=2.8:3.2, red, thick]{x + (pi/2 -3)};
+	\addplot[domain=3.8:4.2, red, thick]{x + (pi/2 -4)};
+	
+	\addplot[domain=-0.2:0.2, red, thick]{-x+3*pi/2};
+	\addplot[domain=0.8:1.2, red, thick]{-x + (3*pi/2 +1)};
+	\addplot[domain=1.8:2.2, red, thick]{-x + (3*pi/2 +2)};
+	\addplot[domain=2.8:3.2, red, thick]{-x + (3*pi/2 +3)};
+	\addplot[domain=3.8:4.2, red, thick]{-x + (3*pi/2 +4)};
+
+
+	\addplot[red, only marks, mark=*, mark size=1.5pt] coordinates{
+	(0,0)(0,pi/2)(0,pi)(0,pi*3/2)(0,2*pi)
+	(1,0)(1,pi/2)(1,pi)(1,pi*3/2)(1,2*pi)
+	(2,0)(2,pi/2)(2,pi)(2,pi*3/2)(2,2*pi)
+	(3,0)(3,pi/2)(3,pi)(3,pi*3/2)(3,2*pi)
+	(4,0)(4,pi/2)(4,pi)(4,pi*3/2)(4,2*pi)
+	};
+
+    \end{axis}
+\end{tikzpicture}
+\end{document}
